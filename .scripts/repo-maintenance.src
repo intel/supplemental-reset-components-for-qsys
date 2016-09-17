@@ -1,0 +1,1173 @@
+#
+# Copyright (c) 2016 Intel Corporation
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+#
+while read -r NEXT_FUNCTION
+do
+	[ -n "${NEXT_FUNCTION}" ] && {
+		echo "Removing function '${NEXT_FUNCTION:?}'"
+		unset -f "${NEXT_FUNCTION:?}"
+	}
+done <<<"$(declare -f -p | 'grep' -e "^repo-maint-.*()" | sed -e "s/^\(\S*\)\s.*/\1/")"
+
+echo -e "\nInstalling new 'repo-maint-*' functions"
+
+echo -e "\nUse 'repo-maint-list-all-functions' to view all functions installed.\n"
+
+#-------------------------------------------------------------------------------
+# repo-maint-update-repo-maintenance-script
+#-------------------------------------------------------------------------------
+repo-maint-update-repo-maintenance-script () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-update-repo-maintenance-script
+#
+#	This function writes the currently installed 'repo-maint-*' functions
+#	out to the file .scripts/repo-maintenance.src in the git repo.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    [ "${#:?}" -eq "0" ] || { 
+        echo -e "\nERROR: unexpected argument\n\n" 1>&2;
+        return 1
+    };
+    cd "$(git rev-parse --show-toplevel)" || { 
+        echo -e "\nERROR: unable to change directory to top level of repo\n\n" 1>&2;
+        return 1
+    };
+    REPO_MAINT_SRC=".scripts/repo-maintenance.src";
+    mkdir -p "$(dirname "${REPO_MAINT_SRC:?}")";
+    cat > "${REPO_MAINT_SRC:?}"  <<EOF
+#
+# Copyright (c) 2016 Intel Corporation
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+#
+while read -r NEXT_FUNCTION
+do
+	[ -n "\${NEXT_FUNCTION}" ] && {
+		echo "Removing function '\${NEXT_FUNCTION:?}'"
+		unset -f "\${NEXT_FUNCTION:?}"
+	}
+done <<<"\$(declare -f -p | 'grep' -e "^repo-maint-.*()" | sed -e "s/^\(\S*\)\s.*/\1/")"
+
+echo -e "\nInstalling new 'repo-maint-*' functions"
+
+echo -e "\nUse 'repo-maint-list-all-functions' to view all functions installed.\n"
+EOF
+
+    while read -r NEXT_FUNCTION; do
+        [ -n "${NEXT_FUNCTION}" ] && { 
+            cat >> "${REPO_MAINT_SRC:?}"  <<EOF
+
+#-------------------------------------------------------------------------------
+# ${NEXT_FUNCTION}
+#-------------------------------------------------------------------------------
+EOF
+
+            declare -f -p "${NEXT_FUNCTION}" >> "${REPO_MAINT_SRC:?}"
+        };
+    done <<< "$(cat <<EOF
+repo-maint-update-repo-maintenance-script
+repo-maint-list-all-functions
+repo-maint-create-new-git-repo
+repo-maint-create-development-branch
+repo-maint-merge-development-branch
+repo-maint-delete-development-branch
+repo-maint-create-commit-on-current-branch-head
+repo-maint-create-release-tag-at-current-branch-head
+repo-maint-create-branch-from-master
+repo-maint-create-sub-release-branch
+repo-maint-calculate-current-release-era-string
+repo-maint-validate-release-era-string
+repo-maint-validate-sub-release-branch-prefix
+EOF
+)";
+    cat  <<EOF || 
+
+Successfully updated '${REPO_MAINT_SRC:?}' file.
+You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
+
+EOF
+ { 
+        echo -e "\nERROR: final comment\n\n" 1>&2;
+        return 1
+    };
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-list-all-functions
+#-------------------------------------------------------------------------------
+repo-maint-list-all-functions () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-list-all-functions
+#
+#	This function lists all the repo-maint-* functions in the current
+#	environment.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    cat  <<EOF
+
+These are the currently available repo-maint-* functions in the environment:
+
+EOF
+
+    declare -f -p | 'grep' -e "^repo-maint-.*()" | sed -e "s/^\(\S*\)\s.*/\1/";
+    cat  <<EOF
+
+Remember that you can get a help message out of any of these functions by
+setting the environment variable REPO_MAINT_HELP prior to invoking the function,
+like this:
+
+REPO_MAINT_HELP=1 repo-maint-list-all-functions
+
+EOF
+
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-create-new-git-repo
+#-------------------------------------------------------------------------------
+repo-maint-create-new-git-repo () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-create-new-git-repo
+#
+#	This function creates a new git repo in the current working directory.
+#	The directory must be empty.  After the repo is initialized an empty
+#	commit is created and tagged so that you can branch from an empty repo
+#	in the future.  The '.scripts/repo-maintenance.src' file is created and
+#	committed and tagged.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    EMPTY_DIR=$(find . -maxdepth 0 -empty -exec echo "empty" \;);
+    [ "${EMPTY_DIR}" == "empty" ] || { 
+        echo -e "\nERROR: directory must be empty\n\n" 1>&2;
+        return 1
+    };
+    git init || { 
+        echo -e "\nERROR: git init\n\n" 1>&2;
+        return 1
+    };
+    git commit --allow-empty -m "Create initial empty repo" || { 
+        echo -e "\nERROR: 1st git commit\n\n" 1>&2;
+        return 1
+    };
+    git tag -F - "initial-empty-repo"  <<EOF || 
+tag 'initial-empty-repo'
+
+Use 'git checkout -b <new-branch-name> initial-empty-repo' when you wish
+to create a new clean project branch with no contents.
+
+EOF
+ { 
+        echo -e "\nERROR: 1st git tag\n\n" 1>&2;
+        return 1
+    };
+    repo-maint-update-repo-maintenance-script;
+    REPO_MAINT_SRC=".scripts/repo-maintenance.src";
+    [ -f "${REPO_MAINT_SRC:?}" ] || { 
+        echo -e "\nERROR: file '${REPO_MAINT_SRC:?}' does not exist\n\n" 1>&2;
+        return 1
+    };
+    git add "${REPO_MAINT_SRC:?}" || { 
+        echo -e "\nERROR: git add\n\n" 1>&2;
+        return 1
+    };
+    type -t custom-repo-maint-update-custom-repo-maintenance-script > /dev/null 2>&1 && { 
+        custom-repo-maint-update-custom-repo-maintenance-script;
+        CUSTOM_REPO_MAINT_SRC=".scripts/custom-repo-maintenance.src";
+        [ -f "${CUSTOM_REPO_MAINT_SRC:?}" ] || { 
+            echo -e "\nERROR: file '${CUSTOM_REPO_MAINT_SRC:?}' does not exist\n\n" 1>&2;
+            return 1
+        };
+        git add "${CUSTOM_REPO_MAINT_SRC:?}" || { 
+            echo -e "\nERROR: 2nd git add\n\n" 1>&2;
+            return 1
+        }
+    } || { 
+        echo -e "\nINFO: custom-repo-maint* functions are not in the environment\n\n"
+    };
+    git commit -m "Add initial repo maintenance file" || { 
+        echo -e "\nERROR: 2nd git commit\n\n" 1>&2;
+        return 1
+    };
+    git tag -F - "initial-repo-maintenance"  <<EOF || 
+tag 'initial-repo-maintenance'
+
+Initial repo maintenance contents in '${REPO_MAINT_SRC:?}'.
+
+EOF
+ { 
+        echo -e "\nERROR: 2nd git tag\n\n" 1>&2;
+        return 1
+    };
+    cat  <<EOF || 
+
+Successfully created initial git repo.
+You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
+To synchronize this repo with GITHUB, do the following:
+
+git remote add origin https://github.com/<ghuser>/<repo-name>.git
+git push -u origin $(git rev-parse --abbrev-ref HEAD) initial-empty-repo initial-repo-maintenance
+
+EOF
+ { 
+        echo -e "\nERROR: final comment\n\n" 1>&2;
+        return 1
+    };
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-create-development-branch
+#-------------------------------------------------------------------------------
+repo-maint-create-development-branch () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-create-development-branch <release-tag-to-branch-from>
+#
+#	This function ensures that the release tag to branch from exists and
+#	that a 'development' branch does NOT exist and that the index is clean.
+#	Then it creates a new branch called 'development' from the tag that was
+#	passed in.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    [ "${#:?}" -eq "1" ] || { 
+        echo -e "\nERROR: expecting <release-tag-to-branch-from> argument\n\n" 1>&2;
+        return 1
+    };
+    [ -z "${1##*([[:alnum:]]|_|-)}" ] || { 
+        echo -e "\nERROR: release tag to branch from contains illegal characters" 1>&2;
+        echo -e "'${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git tag --list "${1:?}")" ] && { 
+        echo -e "\nERROR: release tag to branch from does not exist" 1>&2;
+        echo -e "'${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git branch --list 'development')" ] || { 
+        echo -e "\nERROR: branch 'development' already exists\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git status -s)" ] || { 
+        echo -e "\nERROR: index must be clean" 1>&2;
+        echo -e "View index with 'git status'.\n\n" 1>&2;
+        return 1
+    };
+    git checkout -f -b 'development' "${1:?}" || { 
+        echo -e "\nERROR: git checkout\n\n" 1>&2;
+        return 1
+    };
+    cat  <<EOF || 
+
+Successfully created 'development' branch.
+You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
+
+EOF
+ { 
+        echo -e "\nERROR: final comment\n\n" 1>&2;
+        return 1
+    };
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-merge-development-branch
+#-------------------------------------------------------------------------------
+repo-maint-merge-development-branch () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-merge-development-branch <branch-head-to-merge-with>
+#
+#	This function ensures that the branch head to merge with exists and that
+#	the current branch is 'development' and the index is clean.  Then it
+#	checks out the branch head to merge with and performs a squash merge
+#	from the development branch.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    [ "${#:?}" -eq "1" ] || { 
+        echo -e "\nERROR: expecting <branch-head-to-merge-with> argument\n\n" 1>&2;
+        return 1
+    };
+    [ -z "${1##*([[:alnum:]]|_|-)}" ] || { 
+        echo -e "\nERROR: branch head to merge with contains illegal characters" 1>&2;
+        echo -e "'${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git branch --list "${1:?}")" ] && { 
+        echo -e "\nERROR: branch head to merge with does not exist" 1>&2;
+        echo -e "'${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --abbrev-ref HEAD)" == 'development' ] || { 
+        echo -e "\nERROR: you are not on the branch 'development'" 1>&2;
+        echo -e "You are on branch: '$(git rev-parse --abbrev-ref HEAD)'\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git status -s)" ] || { 
+        echo -e "\nERROR: index must be clean" 1>&2;
+        echo -e "View index with 'git status'.\n\n" 1>&2;
+        return 1
+    };
+    git checkout -f "${1:?}" || { 
+        echo -e "\nERROR: git checkout\n\n" 1>&2;
+        return 1
+    };
+    git merge --squash 'development' || { 
+        echo -e "\nERROR: git merge\n\n" 1>&2;
+        return 1
+    };
+    cat  <<EOF || 
+
+Successfully merged from 'development' branch to '$(git rev-parse --abbrev-ref HEAD)' branch.
+You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
+
+EOF
+ { 
+        echo -e "\nERROR: final comment\n\n" 1>&2;
+        return 1
+    };
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-delete-development-branch
+#-------------------------------------------------------------------------------
+repo-maint-delete-development-branch () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-delete-development-branch
+#
+#	This function ensures that you are not currently on the branch
+#	'development' and that the branch 'development' exists.  Then it asks if
+#	you are certain that you wish to delete the branch 'development'.  If
+#	you respond 'yes', then the branch 'development' is deleted.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    [ "${#:?}" -eq "0" ] || { 
+        echo -e "\nERROR: unexpected argument\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --abbrev-ref HEAD)" == 'development' ] && { 
+        echo -e "\nERROR: you are currently on the branch 'development'\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git branch --list 'development')" ] && { 
+        echo -e "\nERROR: branch 'development' does not exist\n\n" 1>&2;
+        return 1
+    };
+    echo -e "\nAre you certain that you wish to delete the branch 'development'?";
+    read -p "Must respond with 'yes':";
+    [ "${REPLY}" != 'yes' ] && { 
+        echo -e "\nERROR: did not respond with 'yes'\n\n" 1>&2;
+        return 1
+    };
+    git branch -D 'development' || { 
+        echo -e "\nERROR: git branch\n\n" 1>&2;
+        return 1
+    };
+    cat  <<EOF || 
+
+Successfully deleted 'development' branch.
+You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
+
+EOF
+ { 
+        echo -e "\nERROR: final comment\n\n" 1>&2;
+        return 1
+    };
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-create-commit-on-current-branch-head
+#-------------------------------------------------------------------------------
+repo-maint-create-commit-on-current-branch-head () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-create-commit-on-current-branch-head [--allow-dirty-index] \\
+#   < <commit-message-file>
+#
+#  or
+#
+# repo-maint-create-commit-on-current-branch-head [--allow-dirty-index] <<EOF
+# <commit-message-text>
+# EOF
+#
+#  or
+#
+# repo-maint-create-commit-on-current-branch-head [--allow-dirty-index]
+# <commit-message-text>
+# CR + CTRL-D
+#
+#	This function ensures that the index is clean, unless you pass the
+#	argument '--allow-dirty-index', then a dirty index is allowed.  The
+#	commit message is read in over STDIN and is validated as follows:
+#		- lines that begin with '#' are not evaluated and do not
+#		  increment the line count
+#		- line 1 is no longer than 50 columns long
+#		- line 2 is no longer than 0 columns long
+#		- lines 3 and up are no longer than 72 columns long
+#	
+#	If the commit message is valid then the commit is applied.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    [ "${#:?}" -gt "1" ] && { 
+        echo -e "\nERROR: too many arguments\n\n" 1>&2;
+        return 1
+    };
+    [ "${#:?}" -gt "0" ] && { 
+        [ "${1:?}" == "--allow-dirty-index" ] || { 
+            echo -e "\nERROR: unexpected argument\n\n" 1>&2;
+            return 1
+        }
+    } || { 
+        git status -s | 'grep' -v -e "\S  .*" > /dev/null 2>&1 && { 
+            echo -e "\nERROR: index is not fully staged, maybe use '--allow-dirty-index'\n\n" 1>&2;
+            return 1
+        }
+    };
+    declare -a INPUT_LINE_ARRAY;
+    echo "Reading text for commit message on STDIN, must be wrapped at column 50/0/72.";
+    echo "If you did not invoke this function with '< file' or '<<EOF' redirection, then";
+    echo "enter CTRL-C to start over, or enter your message followed by CR + CTRL-D.";
+    readarray INPUT_LINE_ARRAY;
+    INDEX=0;
+    LINE=0;
+    while [ -n "${INPUT_LINE_ARRAY[${INDEX:?}]}" ]; do
+        [ -n "${INPUT_LINE_ARRAY[${INDEX:?}]##\#*}" ] && { 
+            case "${LINE:?}" in 
+                0)
+                    [ ${#INPUT_LINE_ARRAY[${INDEX:?}]} -gt 51 ] && { 
+                        echo -e "\nERROR: message line 1 is longer than 50 columns\n\n" 1>&2;
+                        return 1
+                    }
+                ;;
+                1)
+                    [ ${#INPUT_LINE_ARRAY[${INDEX:?}]} -gt 1 ] && { 
+                        echo -e "\nERROR: message line 2 is longer than 0 columns\n\n" 1>&2;
+                        return 1
+                    }
+                ;;
+                *)
+                    [ ${#INPUT_LINE_ARRAY[${INDEX:?}]} -gt 73 ] && { 
+                        echo -e "\nERROR: message line $((${INDEX:?} + 1)) is longer than 72 columns\n\n" 1>&2;
+                        return 1
+                    }
+                ;;
+            esac;
+            LINE=$((${LINE:?} + 1))
+        };
+        INDEX=$((${INDEX:?} + 1));
+    done;
+    ( INDEX=0;
+    while [ -n "${INPUT_LINE_ARRAY[${INDEX:?}]}" ]; do
+        [ -n "${INPUT_LINE_ARRAY[${INDEX:?}]##\#*}" ] && { 
+            echo -n "${INPUT_LINE_ARRAY[${INDEX:?}]}"
+        };
+        INDEX=$((${INDEX:?} + 1));
+    done ) | git commit -F - || { 
+        echo -e "\nERROR: git commit\n\n" 1>&2;
+        return 1
+    };
+    cat  <<EOF || 
+
+Successfully committed to '$(git rev-parse --abbrev-ref HEAD)' branch.
+You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
+
+EOF
+ { 
+        echo -e "\nERROR: final comment\n\n" 1>&2;
+        return 1
+    };
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-create-release-tag-at-current-branch-head
+#-------------------------------------------------------------------------------
+repo-maint-create-release-tag-at-current-branch-head () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-create-release-tag-at-current-branch-head <release-era> \\
+#   < <tag-message-body-file>
+#
+#  or
+#
+# repo-maint-create-release-tag-at-current-branch-head <release-era> <<EOF
+# <tag-message-body-text>
+# EOF
+#
+#  or
+#
+# repo-maint-create-release-tag-at-current-branch-head <release-era>
+# <tag-message-body-text>
+# CR + CTRL-D
+#
+#	This function ensures that the index is clean, then it validates the
+#	<release-era> argument and calculates the next sequence number for this
+#	<branch>-<release-era>.  The tag message body is read in over STDIN and
+#	is validated as follows:
+#		- lines that begin with '#' are not evaluated
+#		- all lines are no longer than 72 columns long
+#
+#	If the tag message body is valid then the tag is applied.
+#
+#	NOTE: the tag message header is automatically generated in the function.
+#
+#	NOTE: if the environment variable REPO_MAINT_CALC_TAG_ONLY is set then
+#	      this function will return immediately after calculating the next
+#	      tag name and printing it.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    [ "${#:?}" -eq "1" ] || { 
+        echo -e "\nERROR: expecting <release-era> argument\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git status -s)" ] || { 
+        echo -e "\nERROR: index must be clean" 1>&2;
+        echo -e "View index with 'git status'.\n\n" 1>&2;
+        return 1
+    };
+    [ -z "${1##*([[:alnum:]]|-)}" ] || { 
+        echo -e "\nERROR: release era argument contains illegal characters" 1>&2;
+        echo -e "'${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    repo-maint-validate-release-era-string "${1:?}" || { 
+        echo -e "\nERROR: release era argument appears to be invalid\n\n" 1>&2;
+        return 1
+    };
+    CURRENT_BRANCH_NAME="$(git rev-parse --abbrev-ref HEAD)";
+    case "${CURRENT_BRANCH_NAME}" in 
+        HEAD)
+            echo -e "\nERROR: repo appears to be on a detached HEAD\n\n" 1>&2;
+            return 1
+        ;;
+        master)
+            BRANCH="master"
+        ;;
+        branch-of_* | branch-for_*)
+            BRANCH="${CURRENT_BRANCH_NAME%_*_*}";
+            BRANCH="${BRANCH##*_}"
+        ;;
+        *)
+            echo -e "\nERROR: unknown branch detected" 1>&2;
+            echo -e "'${CURRENT_BRANCH_NAME}'\n\n" 1>&2;
+            return 1
+        ;;
+    esac;
+    LATEST_RELEASE_TAG_IN_THIS_ERA="$(git tag --list "${BRANCH:?}_${1:?}_*" | tail -n 1)";
+    [ -z "${LATEST_RELEASE_TAG_IN_THIS_ERA}" ] && { 
+        SEQUENCE="01"
+    } || { 
+        SEQUENCE="${LATEST_RELEASE_TAG_IN_THIS_ERA##*_}";
+        SEQUENCE="$(printf "%02d" $((10#${SEQUENCE:?} + 1)))"
+    };
+    [ "${CURRENT_BRANCH_NAME%_*_*}" == "master" ] && { 
+        [ -z "$(git branch --list "*${BRANCH:?}_${1:?}*")" ] || { 
+            echo -e "\nERROR: there appears to be a branch started for this release era\n\n" 1>&2;
+            return 1
+        };
+        LATEST_RELEASE_TAG_ON_THIS_BRANCH="$(git tag --list "${BRANCH:?}_*" | tail -n 1)";
+        [ -n "${LATEST_RELEASE_TAG_ON_THIS_BRANCH}" ] && { 
+            [ "${LATEST_RELEASE_TAG_ON_THIS_BRANCH:?}" \< "${BRANCH:?}_${1:?}_${SEQUENCE:?}" ] || { 
+                echo -e "\nERROR: there appears to be a later release era tag on branch 'master' already" 1>&2;
+                echo -e "  This tag: '${BRANCH:?}_${1:?}_${SEQUENCE:?}'" 1>&2;
+                echo -e "Latest tag: '${LATEST_RELEASE_TAG_ON_THIS_BRANCH:?}'\n\n" 1>&2;
+                return 1
+            }
+        };
+        true
+    } || { 
+        [ -z "${CURRENT_BRANCH_NAME##*_${1:?}_*}" ] || { 
+            echo -e "\nERROR: branch does not appear to match this release era" 1>&2;
+            echo -e "   Release Era: '${1:?}'" 1>&2;
+            echo -e "Current Branch: '${CURRENT_BRANCH_NAME:?}'\n\n" 1>&2;
+            return 1
+        }
+    };
+    [ "${CURRENT_BRANCH_NAME%%_*}" == "branch-for" ] && { 
+        SEQUENCE="${CURRENT_BRANCH_NAME##*_}";
+        [ -z "$(git tag --list "${BRANCH:?}_${1:?}_${SEQUENCE:?}")" ] || { 
+            echo -e "\nERROR: this tag already seems to exist" 1>&2;
+            echo -e "'${BRANCH:?}_${1:?}_${SEQUENCE:?}'\n\n" 1>&2;
+            return 1
+        }
+    };
+    [ -n "${REPO_MAINT_CALC_TAG_ONLY}" ] && { 
+        echo -e "Calculated tag name: '${BRANCH:?}_${1:?}_${SEQUENCE:?}'\n" 1>&2;
+        echo -e "Exiting after tag name calculation.\n\n" 1>&2;
+        return 1
+    };
+    declare -a INPUT_LINE_ARRAY;
+    echo "Reading text for tag message body on STDIN, must be wrapped at column 72.";
+    echo "If you did not invoke this function with '< file' or '<<EOF' redirection, then";
+    echo "enter CTRL-C to start over, or enter your message followed by CR + CTRL-D.";
+    readarray INPUT_LINE_ARRAY;
+    INDEX=0;
+    while [ -n "${INPUT_LINE_ARRAY[${INDEX:?}]}" ]; do
+        [ -n "${INPUT_LINE_ARRAY[${INDEX:?}]##\#*}" ] && { 
+            [ ${#INPUT_LINE_ARRAY[${INDEX:?}]} -gt 73 ] && { 
+                echo -e "\nERROR: message line $((${INDEX:?} + 1)) is longer than 72 columns\n\n" 1>&2;
+                return 1
+            }
+        };
+        INDEX=$((${INDEX:?} + 1));
+    done;
+    ( cat  <<EOF
+Release tag '${BRANCH:?}_${1:?}_${SEQUENCE:?}'
+
+EOF
+
+    INDEX=0
+    while [ -n "${INPUT_LINE_ARRAY[${INDEX:?}]}" ]; do
+        [ -n "${INPUT_LINE_ARRAY[${INDEX:?}]##\#*}" ] && { 
+            echo -n "${INPUT_LINE_ARRAY[${INDEX:?}]}"
+        };
+        INDEX=$((${INDEX:?} + 1));
+    done ) | git tag -F - "${BRANCH:?}_${1:?}_${SEQUENCE:?}" || { 
+        echo -e "\nERROR: git tag\n\n" 1>&2;
+        return 1
+    };
+    cat  <<EOF || 
+
+Successfully created new release tag.
+New release tag: '${BRANCH:?}_${1:?}_${SEQUENCE:?}'
+You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
+To synchronize this branch with GITHUB, do the following:
+
+If you have already added the remote for this git repo then you can simply do
+this:
+
+git push -u origin $(git rev-parse --abbrev-ref HEAD) ${BRANCH:?}_${1:?}_${SEQUENCE:?}
+
+If you have not already added the remote for this repository you must do that
+first, and then you should probably push all of the repo branches and tags like
+this:
+
+git remote add origin https://github.com/<ghuser>/<repo-name>.git
+git push --all --follow-tags -u origin
+
+EOF
+ { 
+        echo -e "\nERROR: final comment\n\n" 1>&2;
+        return 1
+    };
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-create-branch-from-master
+#-------------------------------------------------------------------------------
+repo-maint-create-branch-from-master () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-create-branch-from-master <release-tag-to-branch-from>
+#
+#	This function ensures that the release tag to branch from exists and
+#	that it indicates the master branch and that its the latest sequence in
+#	the release era and that it's not currently the last tag on the branch.
+#	Then it ensures that a branch for this tag does not already exist and
+#	that no other branches for this release era exist.  Then if the index is
+#	clean it creates a new branch 'branch-of_<release-tag-to-branch-from>'
+#	from the tag that was passed in.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    [ "${#:?}" -eq "1" ] || { 
+        echo -e "\nERROR: expecting <release-tag-to-branch-from> argument\n\n" 1>&2;
+        return 1
+    };
+    [ -z "${1##*([[:alnum:]]|_|-)}" ] || { 
+        echo -e "\nERROR: release tag to branch from contains illegal characters" 1>&2;
+        echo -e "'${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git tag --list "${1:?}")" ] && { 
+        echo -e "\nERROR: release tag to branch from does not exist" 1>&2;
+        echo -e "'${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    [ "${1%_*_*}" == "master" ] || { 
+        echo -e "\nERROR: release tag to branch from does not indicate master branch" 1>&2;
+        echo -e " Input tag: '${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    LATEST_RELEASE_TAG_IN_THIS_ERA="$(git tag --list "${1%_*}_*" | tail -n 1)";
+    [ "${LATEST_RELEASE_TAG_IN_THIS_ERA:?}" == "${1:?}" ] || { 
+        echo -e "\nERROR: release tag to branch from is not the latest in the release era" 1>&2;
+        echo -e " Input tag: '${1:?}'" 1>&2;
+        echo -e "Latest tag: '${LATEST_RELEASE_TAG_IN_THIS_ERA:?}'\n\n" 1>&2;
+        return 1
+    };
+    LATEST_RELEASE_TAG_ON_THIS_BRANCH="$(git tag --list "${1%_*_*}_*" | tail -n 1)";
+    [ "${LATEST_RELEASE_TAG_ON_THIS_BRANCH:?}" == "${1:?}" ] && { 
+        echo -e "\nERROR: release tag to branch from is the latest on this branch" 1>&2;
+        echo -e " Input tag: '${1:?}'" 1>&2;
+        echo -e "Latest tag: '${LATEST_RELEASE_TAG_ON_THIS_BRANCH:?}'\n\n" 1>&2;
+        return 1
+    };
+    [ -z "${LATEST_RELEASE_TAG_ON_THIS_BRANCH:?}" ] && { 
+        echo -e "\nERROR: could not determine latest release tag on this branch" 1>&2;
+        echo -e " Input tag: '${1:?}'" 1>&2;
+        echo -e "Latest tag: '${LATEST_RELEASE_TAG_ON_THIS_BRANCH:?}'\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git branch --list "branch-of_${1:?}")" ] || { 
+        echo -e "\nERROR: branch 'branch-of_${1:?}' already exists\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git branch --list "branch-of_${1%_*}*")" ] || { 
+        echo -e "\nERROR: a branch for this release era already exists\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git status -s)" ] || { 
+        echo -e "\nERROR: index must be clean" 1>&2;
+        echo -e "View index with 'git status'.\n\n" 1>&2;
+        return 1
+    };
+    git checkout -f -b "branch-of_${1:?}" "${1:?}" || { 
+        echo -e "\nERROR: git checkout\n\n" 1>&2;
+        return 1
+    };
+    cat  <<EOF || 
+
+Successfully created 'branch-of_${1:?}' branch.
+You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
+
+EOF
+ { 
+        echo -e "\nERROR: final comment\n\n" 1>&2;
+        return 1
+    };
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-create-sub-release-branch
+#-------------------------------------------------------------------------------
+repo-maint-create-sub-release-branch () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-create-sub-release-branch \\
+#   <release-tag-to-branch-from> <branch-prefix> < <file-list>
+#
+#  or
+#
+# repo-maint-create-sub-release-branch \\
+#   <release-tag-to-branch-from> <branch-prefix> <<EOF
+# <file-list>
+# EOF
+#
+#  or
+#
+# repo-maint-create-sub-release-branch \\
+#   <release-tag-to-branch-from> <branch-prefix>
+# <file-list>
+# CR + CTRL-D
+#
+#	This function ensures that the release tag to branch from exists and
+#	that it indicates the master branch and that the branch prefix is valid
+#	and that this branch does not already exist.  Then if the index is clean
+#	it creates a new branch 'branch-for_<branch-prefix>_*" where the suffix
+#	for the <release-era> and <sequence> are extracted from the argument
+#	<release-tag-to-branch-from>.  The new branch is started from the tag
+#	'initial-empty-repo' which should provide a completely empty working
+#	directory.
+#
+#	After the new branch is created the function reads a file list over
+#	STDIN and populates the new working directory with those files from the
+#	<release-tag-to-branch-from> commit.  The format of this input is one
+#	file name per line.  Each file is checked out of the original source
+#	commit and populated into the new branch working directory.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    [ "${#:?}" -eq "2" ] || { 
+        echo -e "\nERROR: expecting <release-tag-to-branch-from> and <branch-prefix> arguments\n\n" 1>&2;
+        return 1
+    };
+    [ -z "${1##*([[:alnum:]]|_|-)}" ] || { 
+        echo -e "\nERROR: release tag to branch from contains illegal characters" 1>&2;
+        echo -e "'${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    [ -z "${2##*([[:alnum:]]|-)}" ] || { 
+        echo -e "\nERROR: branch prefix contains illegal characters" 1>&2;
+        echo -e "'${2:?}'\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git tag --list "${1:?}")" ] && { 
+        echo -e "\nERROR: release tag to branch from does not exist" 1>&2;
+        echo -e "'${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    repo-maint-validate-sub-release-branch-prefix "${2:?}" || { 
+        echo -e "\nERROR: branch prefix argument appears to be invalid\n\n" 1>&2;
+        return 1
+    };
+    [ "${1%_*_*}" == "master" ] || { 
+        echo -e "\nERROR: release tag to branch from does not indicate master branch" 1>&2;
+        echo -e " Input tag: '${1:?}'\n\n" 1>&2;
+        return 1
+    };
+    BRANCH_SUFFIX="${1#master_}";
+    [ -z "$(git branch --list "branch-for_${2:?}_${BRANCH_SUFFIX:?}")" ] || { 
+        echo -e "\nERROR: branch 'branch-for_${2:?}_${BRANCH_SUFFIX:?}' already exists\n\n" 1>&2;
+        return 1
+    };
+    [ -z "$(git status -s)" ] || { 
+        echo -e "\nERROR: index must be clean" 1>&2;
+        echo -e "View index with 'git status'.\n\n" 1>&2;
+        return 1
+    };
+    git checkout -f --orphan "branch-for_${2:?}_${BRANCH_SUFFIX:?}" "initial-empty-repo" || { 
+        echo -e "\nERROR: git checkout\n\n" 1>&2;
+        return 1
+    };
+    git commit --allow-empty -m "Create initial empty orphan branch" || { 
+        echo -e "\nERROR: git commit\n\n" 1>&2;
+        return 1
+    };
+    echo "Reading list of files to checkout on STDIN.  Must be one file name per line.";
+    echo "If you did not invoke this function with '< file' or '<<EOF' redirection, then";
+    echo "enter CTRL-C to start over, or enter your files followed by CR + CTRL-D.";
+    while read -r NEXT_FILE; do
+        git checkout "${1:?}" "${NEXT_FILE:?}" || { 
+            echo -e "\nERROR: while checking out file" 1>&2;
+            echo -e "File to checkout: '${NEXT_FILE:?}'" 1>&2;
+            echo -e "Tag to checkout from: '${1:?}'\n\n" 1>&2;
+            return 1
+        };
+    done;
+    cat  <<EOF || 
+
+Successfully created 'branch-for_${2:?}_${BRANCH_SUFFIX:?}' branch.
+You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
+
+EOF
+ { 
+        echo -e "\nERROR: final comment\n\n" 1>&2;
+        return 1
+    };
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-calculate-current-release-era-string
+#-------------------------------------------------------------------------------
+repo-maint-calculate-current-release-era-string () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-calculate-current-release-era-string
+#
+#	This function calculates the current release era string and prints it
+#	out STDOUT.
+#
+#	This function requires user maintenance to create a suitable algorithm
+#	for determining the release era of the project.  A release era may be
+#	determined by a set of development tools and their release version, or
+#	the version of some fundamental dependency that the project has, or any
+#	arbitrary scheme that makes sense for the project.
+#
+#	NOTE: a valid release era string must contain only ([:alnum:]|-)
+#	      characters.
+#
+#	NOTE: sequential release eras must be lexicographic sortable, such that
+#	      the release era that you have today should sort before the release
+#	      era that you define tomorrow.
+#
+#	NOTE: dump the current version of this function with this command:
+#	      declare -f -p repo-maint-calculate-current-release-era-string
+#
+#	NOTE: remove the current version of this function with this command:
+#	      unset -f repo-maint-calculate-current-release-era-string
+#
+#	NOTE: write the current version of this function into the repo
+#	      maintenance script with this command:
+#	      repo-maint-update-repo-maintenance-script
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    ERA="UNKNOWN";
+    QUARTUS_VERSION="$(quartus_sh --version | 'grep' "Version")";
+    'grep' -q "Version 15.1.2 Build 193" <<< $(echo "${QUARTUS_VERSION}") > /dev/null 2>&1 && { 
+        ERA="ACDS-15-1-2-b193"
+    };
+    QUARTUS_VERSION="$(quartus_sh --version | 'grep' "Version")";
+    'grep' -q "Version 16.0.0 Build 211" <<< $(echo "${QUARTUS_VERSION}") > /dev/null 2>&1 && { 
+        ERA="ACDS-16-0-0-b211"
+    };
+    echo ${ERA};
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-validate-release-era-string
+#-------------------------------------------------------------------------------
+repo-maint-validate-release-era-string () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-validate-release-era-string <release-era>
+#
+#	This function validates the release era passed in.
+#
+#	This function requires user maintenance over time to keep it up to date
+#	with all present and future release eras that the project experiences.
+#	The maintenance should be as simple as entering the new release era to
+#	the list of valid release eras that the function should accept.
+#
+#	NOTE: a valid release era string must contain only ([:alnum:]|-)
+#	      characters.
+#
+#	NOTE: sequential release eras must be lexicographic sortable, such that
+#	      the release era that you have today should sort before the release
+#	      era that you define tomorrow.
+#
+#	NOTE: dump the current version of this function with this command:
+#	      declare -f -p repo-maint-validate-release-era-string
+#
+#	NOTE: remove the current version of this function with this command:
+#	      unset -f repo-maint-validate-release-era-string
+#
+#	NOTE: write the current version of this function into the repo
+#	      maintenance script with this command:
+#	      repo-maint-update-repo-maintenance-script
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    [ "${#:?}" -eq "1" ] || { 
+        echo -e "\nERROR: expecting <release-era> argument\n\n" 1>&2;
+        return 1
+    };
+    while read -r NEXT_ERA; do
+        [ -n "${NEXT_ERA}" ] && { 
+            [ "${NEXT_ERA}" == "${1:?}" ] && { 
+                echo -e "\nINFO: valid release era";
+                echo -e "'${1:?}'\n\n";
+                return 0
+            }
+        };
+    done <<< "$(cat <<EOF
+ACDS-15-1-2-b193
+ACDS-16-0-0-b211
+EOF
+)";
+    echo -e "\nERROR: invalid release era" 1>&2;
+    echo -e "'${1:?}'\n\n" 1>&2;
+    return 1
+}
+
+#-------------------------------------------------------------------------------
+# repo-maint-validate-sub-release-branch-prefix
+#-------------------------------------------------------------------------------
+repo-maint-validate-sub-release-branch-prefix () 
+{ 
+    [ -n "${REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# repo-maint-validate-sub-release-branch-prefix <sub-release-branch-prefix>
+#
+#	This function validates the sub release branch prefix passed in.
+#
+#	This function requires user maintenance over time to keep it up to date
+#	with all present and future sub release branch prefixes that the project
+#	experiences.  The maintenance should be as simple as entering the new
+#	sub release branch prefix to the list of valid prefixes that the
+#	function should accept.
+#
+#	NOTE: a valid branch prefix string must contain only ([:alnum:]|-)
+#	      characters.
+#
+#	NOTE: dump the current version of this function with this command:
+#	      declare -f -p repo-maint-validate-sub-release-branch-prefix
+#
+#	NOTE: remove the current version of this function with this command:
+#	      unset -f repo-maint-validate-sub-release-branch-prefix
+#
+#	NOTE: write the current version of this function into the repo
+#	      maintenance script with this command:
+#	      repo-maint-update-repo-maintenance-script
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    [ "${#:?}" -eq "1" ] || { 
+        echo -e "\nERROR: expecting <sub-release-branch-prefix> argument\n\n" 1>&2;
+        return 1
+    };
+    while read -r NEXT_PREFIX; do
+        [ -n "${NEXT_PREFIX}" ] && { 
+            [ "${NEXT_PREFIX}" == "${1:?}" ] && { 
+                echo -e "\nINFO: valid branch prefix";
+                echo -e "'${1:?}'\n\n";
+                return 0
+            }
+        };
+    done <<< "$(cat <<EOF
+components-only
+EOF
+)";
+    echo -e "\nERROR: invalid branch prefix" 1>&2;
+    echo -e "'${1:?}'\n\n" 1>&2;
+    return 1
+}

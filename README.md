@@ -1,1 +1,0 @@
-# supplemental-reset-components-for-qsys

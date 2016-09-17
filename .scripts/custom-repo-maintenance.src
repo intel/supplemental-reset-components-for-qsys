@@ -1,0 +1,671 @@
+#
+# Copyright (c) 2016 Intel Corporation
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+#
+while read -r NEXT_FUNCTION
+do
+	[ -n "${NEXT_FUNCTION}" ] && {
+		echo "Removing function '${NEXT_FUNCTION:?}'"
+		unset -f "${NEXT_FUNCTION:?}"
+	}
+done <<<"$(declare -f -p | 'grep' -e "^custom-repo-maint-.*()" | sed -e "s/^\(\S*\)\s.*/\1/")"
+
+echo -e "\nInstalling new 'custom-repo-maint-*' functions."
+
+echo -e "\nUse 'custom-repo-maint-list-all-functions' to view all functions installed.\n"
+
+#-------------------------------------------------------------------------------
+# custom-repo-maint-update-custom-repo-maintenance-script
+#-------------------------------------------------------------------------------
+custom-repo-maint-update-custom-repo-maintenance-script () 
+{ 
+    [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# custom-repo-maint-update-custom-repo-maintenance-script
+#
+#	This function writes the currently installed 'custom-repo-maint-*'
+#	functions out to the file .scripts/custom-repo-maintenance.src in the
+#	git repo.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    [ "${#:?}" -eq "0" ] || { 
+        echo -e "\nERROR: unexpected argument\n\n" 1>&2;
+        return 1
+    };
+    cd "$(git rev-parse --show-toplevel)" || { 
+        echo -e "\nERROR: unable to change directory to top level of repo\n\n" 1>&2;
+        return 1
+    };
+    CUSTOM_REPO_MAINT_SRC=".scripts/custom-repo-maintenance.src";
+    mkdir -p "$(dirname "${CUSTOM_REPO_MAINT_SRC:?}")";
+    cat > "${CUSTOM_REPO_MAINT_SRC:?}"  <<EOF
+#
+# Copyright (c) 2016 Intel Corporation
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+#
+while read -r NEXT_FUNCTION
+do
+	[ -n "\${NEXT_FUNCTION}" ] && {
+		echo "Removing function '\${NEXT_FUNCTION:?}'"
+		unset -f "\${NEXT_FUNCTION:?}"
+	}
+done <<<"\$(declare -f -p | 'grep' -e "^custom-repo-maint-.*()" | sed -e "s/^\(\S*\)\s.*/\1/")"
+
+echo -e "\nInstalling new 'custom-repo-maint-*' functions."
+
+echo -e "\nUse 'custom-repo-maint-list-all-functions' to view all functions installed.\n"
+EOF
+
+    while read -r NEXT_FUNCTION; do
+        [ -n "${NEXT_FUNCTION}" ] && { 
+            cat >> "${CUSTOM_REPO_MAINT_SRC:?}"  <<EOF
+
+#-------------------------------------------------------------------------------
+# ${NEXT_FUNCTION}
+#-------------------------------------------------------------------------------
+EOF
+
+            declare -f -p "${NEXT_FUNCTION}" >> "${CUSTOM_REPO_MAINT_SRC:?}"
+        };
+    done <<< "$(cat <<EOF
+custom-repo-maint-update-custom-repo-maintenance-script
+custom-repo-maint-list-all-functions
+custom-repo-maint-howto-release
+custom-repo-maint-release-tag-boilerplate
+custom-repo-maint-commit-message-boilerplate
+custom-repo-maint-pre-commit-checklist
+custom-repo-maint-pre-tag-checklist
+custom-repo-maint-pre-push-checklist
+custom-repo-maint-calculate-next-release-tag-name
+EOF
+)";
+    cat  <<EOF || 
+
+Successfully updated '${CUSTOM_REPO_MAINT_SRC:?}' file.
+You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
+
+EOF
+ { 
+        echo -e "\nERROR: final comment\n\n" 1>&2;
+        return 1
+    };
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# custom-repo-maint-list-all-functions
+#-------------------------------------------------------------------------------
+custom-repo-maint-list-all-functions () 
+{ 
+    [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# custom-repo-maint-list-all-functions
+#
+#	This function lists all the custom-repo-maint-* functions in the current
+#	environment.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    cat  <<EOF
+
+These are the currently available custom-repo-maint-* functions in the
+environment:
+
+EOF
+
+    declare -f -p | 'grep' -e "^custom-repo-maint-.*()" | sed -e "s/^\(\S*\)\s.*/\1/";
+    cat  <<EOF
+
+Remember that you can get a help message out of any of these functions by
+setting the environment variable CUSTOM_REPO_MAINT_HELP prior to invoking the
+function, like this:
+
+CUSTOM_REPO_MAINT_HELP=1 custom-repo-maint-list-all-functions
+
+EOF
+
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# custom-repo-maint-howto-release
+#-------------------------------------------------------------------------------
+custom-repo-maint-howto-release () 
+{ 
+    [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# custom-repo-maint-howto-release
+#
+#	This function outputs the process that is followed to create a release
+#	for this project.  Use this as a reminder of how to create consistent
+#	releases in the future.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    cat  <<EOF
+
+HOWTO release
+
+NOTE: the script 'repo-maint-create-sub-release-branch' requires and empty
+branch with the tag 'initial-empty-repo' to exist in order to work properly.  If
+the repository does not have such an empty branch you can create one like this:
+
+#----EXAMPLE--------------------------------------------------------------------
+# git checkout -f --orphan "empty_branch"
+# git rm -rf *
+# git rm -rf .<hidden-directories-and-files>
+# git commit --allow-empty -m "Create empty orphan branch"
+# git tag -F - "initial-empty-repo"  <<EOF
+# tag 'initial-empty-repo'
+#
+# Use 'git checkout -b <new-branch-name> initial-empty-repo' when you wish
+# to create a new clean project branch with no contents.
+#
+# EOF
+#-------------------------------------------------------------------------------
+
+Release Step 1 - prepare the repo
+	Ensure that any stray branches or development branches have been merged
+	into the master branch and purged from the repo, we want to start by
+	making a clean commit on the master branch.
+	
+	Prepare the repository for a release commit, you must have all new and
+	modified files staged to be included in the commit.  The repo
+	maintenance routine will not perform the commit if there are any
+	unstaged files in the file system.  Use 'git status' to understand the
+	current state of the repo.
+
+Release Step 2 - prepare to create the commit message
+	Review prior release commit messages in this repo and review the advice
+	provided in these custom repo maintenance commands:
+	'custom-repo-maint-pre-commit-checklist'
+	'custom-repo-maint-commit-message-boilerplate'
+
+Release Step 3 - create the commit message
+	Create the commit message.
+
+Release Step 4 - execute the commit
+	Run the 'repo-maint-create-commit-on-current-branch-head' maintenance
+	command to execute the commit on the master branch.
+
+#----EXAMPLE--------------------------------------------------------------------
+# repo-maint-create-commit-on-current-branch-head <<EOF
+# Create a test commit on master branch
+#
+# This is a test release commit message for the master branch.
+# EOF
+#-------------------------------------------------------------------------------
+
+Release Step 5 - tag the commit
+	Review the advice provided in these custom repo maintenance commands:
+	'custom-repo-maint-pre-tag-checklist'
+	'custom-repo-maint-release-tag-boilerplate'
+
+	Run the 'repo-maint-create-release-tag-at-current-branch-head'
+	maintenance command to create the tag on the master branch.  Replicate
+	the commit message body in the tag message body.
+
+#----EXAMPLE--------------------------------------------------------------------
+# repo-maint-create-release-tag-at-current-branch-head \\
+#	"\$(repo-maint-calculate-current-release-era-string)" <<EOF
+# This is a test release tag message for the master branch.
+# EOF
+#-------------------------------------------------------------------------------
+
+Release Step 6 - create the components-only branch
+	Once the master branch release is created successfully, create a
+	components-only release. Run the 'repo-maint-create-sub-release-branch'
+	maintenance command to create the a new orphan branch.  This command
+	requires a file list of the files to include in the orphan branch.  Run
+	the '.scripts/list_files_for_component-only_repo.sh' script to generate
+	this file list.  This should only list the non-development files in the
+	repo and the documentation sources required to build the PDF
+	documentation.
+
+#----EXAMPLE--------------------------------------------------------------------
+# repo-maint-create-sub-release-branch \\
+#	<release-tag-to-branch-from> \\
+#	components-only \\
+#	< <(.scripts/list_files_for_component-only_repo.sh)
+#-------------------------------------------------------------------------------
+
+Release Step 7 - build the PDF document
+	With the sub release branch created an populated, we need to build the
+	PDF documentation file, and then remove all the documentation build
+	files so that we only release the PDF file.  Once the documentation
+	directory is cleaned up we need to stage all the files in the file
+	system to be included in the commit.
+
+#----EXAMPLE--------------------------------------------------------------------
+# documentation/build_documentation.sh all
+# find documentation/ -type 'f' | grep -v -e ".*\.pdf" | xargs -I{} rm {}
+# rm -rf documentation/build_logs documentation/images
+# git add --all
+#-------------------------------------------------------------------------------
+
+Release Step 8 - commit the components-only content
+	Now we need to commit the state of this new orphan release branch.
+
+#----EXAMPLE--------------------------------------------------------------------
+# repo-maint-create-commit-on-current-branch-head <<EOF
+# Create a test commit on components-only branch
+#
+# This is a test release commit message for the components-only branch.
+# EOF
+#-------------------------------------------------------------------------------
+
+Release Step 9 - tag the components-only branch
+	After the commit is executed, we need to tag the release.
+	
+#----EXAMPLE--------------------------------------------------------------------
+# repo-maint-create-release-tag-at-current-branch-head \\
+#	"\$(repo-maint-calculate-current-release-era-string)" <<EOF
+# This is a test release tag message for the components-only branch.
+# EOF
+#-------------------------------------------------------------------------------
+
+Release Step 10 - push the repo
+	Now that the releases have been created, push the repo back up to
+	GitHub.  Review the advice in this custom maintenance command:
+	'custom-repo-maint-pre-push-checklist'
+EOF
+
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# custom-repo-maint-release-tag-boilerplate
+#-------------------------------------------------------------------------------
+custom-repo-maint-release-tag-boilerplate () 
+{ 
+    [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# custom-repo-maint-release-tag-boilerplate
+#
+#	This function outputs boilerplate text that is intended to be
+#	incorporated into a release tag message body.  This can serve as a
+#	reminder of how you intend to format your release tag messages.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    cat  <<EOF
+# Lines that being with '#' are considered comments and do not get used in the
+# tag message.
+#
+# It may be useful to include things in the tag message that are informative
+# about the release, like environmental requirements or details that may be
+# unique about the release; however it may be useful to simply remind the user
+# to use 'git show <release-tag>' which will dump the tag message as well as the
+# commit that it points to, and the commit message can carry the details of the
+# release.  It may make sense to have the same data replicated in the release
+# tag message and the commit message if you are familiar with how this
+# information is displayed on GitHub.  The release tag message is actually very
+# visible in certain GitHub contexts, much more so than the commit messages.
+#
+#----------------------------------------------------------------------# <-- 72
+# Remember that the 'repo-maint-create-release-tag-at-current-branch-head'
+# function will automatically create the release tag header, so all we need to
+# provide is the release message body.  Since this repo is located on GitHub we
+# will simply replicate the commit message body that was applied to the release
+# commit so that the same information is displayed when the user views either
+# the release tag message or the release commit message.
+Release testing environment:
+
+# list all of the development tools and their versions along with any
+# substantial environmental system requirements that were used to test this
+# release or that users will need to use this release
+
+Release description:
+
+# provide a verbose description about why this release is created and what
+# significant changes are made to the repo
+
+Changes to be committed:
+
+# include the file change list as output from 'git status'
+
+EOF
+
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# custom-repo-maint-commit-message-boilerplate
+#-------------------------------------------------------------------------------
+custom-repo-maint-commit-message-boilerplate () 
+{ 
+    [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# custom-repo-maint-commit-message-boilerplate
+#
+#	This function outputs boilerplate text that is intended to be
+#	incorporated into a commit message.  This can serve as a reminder of how
+#	you intend to format your commit messages.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    cat  <<EOF
+# Lines that being with '#' are considered comments and do not get used in the
+# commit message.
+#
+# The typical commit format begins with a title line of 50 characters or less,
+# followed by a blank line, followed by the message body lines of 72 characters
+# or less.
+#
+# Use the imperative tense, Refactor... Update... Remove... Add... Release...
+# Change... Repair...  Correct...
+#
+# The commit title should complete this statement as concisely as possible.
+# This commit will...
+#------------------------------------------------# <-- column 50
+# In this project, all of the public commits pushed into the repo are likely to
+# be release commits, and there are only two likely titles that would be used
+# for the commit, so pick one of the following options:
+Create master branch release
+Create components-only branch release
+
+# remember the blank line
+
+# Now in the message body elaborate on what changed and why it needed to change.
+#----------------------------------------------------------------------# <-- 72
+
+Release testing environment:
+
+# list all of the development tools and their versions along with any
+# substantial environmental system requirements that were used to test this
+# release or that users will need to use this release
+
+Release description:
+
+# provide a verbose description about why this release is created and what
+# significant changes are made to the repo
+
+Changes to be committed:
+
+# include the file change list as output from 'git status'
+
+# Finally provide any pointers to external resources that your project refers to
+# or which may be useful for users to be aware of.
+#----------------------------------------------------------------------# <-- 72
+
+EOF
+
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# custom-repo-maint-pre-commit-checklist
+#-------------------------------------------------------------------------------
+custom-repo-maint-pre-commit-checklist () 
+{ 
+    [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# custom-repo-maint-pre-commit-checklist
+#
+#	This function outputs a checklist for consideration before you commit to
+#	a branch head.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    cat  <<EOF
+
+Here is the current status of the index:
+
+$(git status)
+
+Current release era: '$(repo-maint-calculate-current-release-era-string)'
+Next expected release tag: '$(custom-repo-maint-calculate-next-release-tag-name | tr -d '\n')'
+
+Things to consider before committing:
+
+- Have the license requirements of the project changed in any way?  Should you
+  update any license files or source headers?  Are the copyright declarations
+  accurate and up to date?  Is this the first time this year that you have
+  modified files in the repo?  Should the copyright declarations be updated?
+  List license files in the repo here as a reminder:
+
+	LICENSE
+
+- Have you updated all relevant readme and documentation files?  List readme and
+  documentation files in the repo here as a reminder:
+
+	./documentation/README
+	./documentation/qsys_templates/README
+	./README
+	./documentation/howto_supplemental_reset_components_for_qsys.tex
+
+- Do you need to update any of the repo maintenance scripts?  Typically located
+  in '.scripts' directory in the repo.
+
+- Has the release era changed?  Should you update the function
+  'repo-maint-calculate-current-release-era-string' in
+  '.scripts/repo-maintenance.src'
+
+- Are there any external references that should be included in the commit
+  message?  List external references here as a reminder:
+	EXAMPLE: Documentation located at URL
+
+- If this is a release commit, do you have the environmental requirements
+  documented in the commit message?  List the environmental requirements here as
+  a reminder:
+	ENVIRONMENT REQUIREMENTS
+	ACDS Version 15.1.2 Build 193
+	
+- Check the output of custom-repo-maint-commit-message-boilerplate for the
+  format conventions reminder.
+
+EOF
+
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# custom-repo-maint-pre-tag-checklist
+#-------------------------------------------------------------------------------
+custom-repo-maint-pre-tag-checklist () 
+{ 
+    [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# custom-repo-maint-pre-tag-checklist
+#
+#	This function outputs a checklist for consideration before you tag a
+#	commit.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    cat  <<EOF
+
+Here is the current status of the index:
+
+$(git status)
+
+Current release era: '$(repo-maint-calculate-current-release-era-string)'
+Next expected release tag: '$(custom-repo-maint-calculate-next-release-tag-name | tr -d '\n')'
+
+Things to consider before tagging:
+
+- Is this tag pointing to a commit with a reasonable commit message that
+  adequately describes this release?
+
+- Have the development scripts been run to validate expected functionality of
+  all components prior to making this release?
+
+- Has the Protex code scan been run prior to making this release?
+
+- Has the IP plan in Code Center been approved prior to making this release?
+
+- Does this release contain any changes that would trigger the need to obtain
+  a new OS PDT approval?
+
+- Check the output of custom-repo-maint-release-tag-boilerplate for the format
+  conventions reminder.
+
+EOF
+
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# custom-repo-maint-pre-push-checklist
+#-------------------------------------------------------------------------------
+custom-repo-maint-pre-push-checklist () 
+{ 
+    [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# custom-repo-maint-pre-push-checklist
+#
+#	This function outputs a checklist for consideration before you push to
+#	an upstream server.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo\n\n" 1>&2;
+        return 1
+    };
+    [ "$(git rev-parse --is-inside-work-tree)" == 'true' ] || { 
+        echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
+        return 1
+    };
+    cat  <<EOF
+
+These are the current branches in the repo:
+
+$(git branch --list --all)
+
+These are the current tags in the repo:
+
+$(git tag --list)
+
+If you have already added the remote for this git repo then you can simply do
+this:
+
+git push -u origin <branches-to-push> <tags-to-push>
+
+If you have not already added the remote for this repository you must do that
+first, and then you should probably push all of the repo branches and tags like
+this:
+
+git remote add origin https://github.com/<ghuser>/<repo-name>.git
+git push --all --follow-tags -u origin
+
+NOTE: do not use the --all and --follow-tags options if you have extra
+      development branches and things that you do not want in the upstream repo.
+
+EOF
+
+    return 0
+}
+
+#-------------------------------------------------------------------------------
+# custom-repo-maint-calculate-next-release-tag-name
+#-------------------------------------------------------------------------------
+custom-repo-maint-calculate-next-release-tag-name () 
+{ 
+    [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
+        cat 1>&2  <<EOF
+#-------------------------------------------------------------------------------
+# custom-repo-maint-calculate-next-release-tag-name
+#
+#	This function calls repo-maint-create-release-tag-at-current-branch-head
+#	to compute the next expected release tag name.  The function will call
+#	repo-maint-calculate-current-release-era-string to get the current
+#	release era, but you can set the environment variable
+#	CUSTOM_REPO_MAINT_OVERRIDE_RELEASE_ERA to a value that you wish to
+#	override the release era with.
+#-------------------------------------------------------------------------------
+EOF
+
+        return 1
+    }
+    NEXT_TAG="$(REPO_MAINT_CALC_TAG_ONLY=1 repo-maint-create-release-tag-at-current-branch-head "${CUSTOM_REPO_MAINT_OVERRIDE_RELEASE_ERA:=$(repo-maint-calculate-current-release-era-string)}" 2>&1 | 'grep' -e "^Calculated tag name: '.*'$" | sed -e "s/^Calculated tag name: '\(.*\)'$/\1/" )";
+    [ -n "${NEXT_TAG}" ] && { 
+        echo "${NEXT_TAG:?}"
+    } || { 
+        echo "ERROR"
+    };
+    return 0
+}

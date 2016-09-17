@@ -1,0 +1,150 @@
+#!/bin/bash
+#
+# Copyright (c) 2016 Intel Corporation
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+#
+
+BSP_TYPE=hal
+BSP_DIR=.
+SOPC_DIR=../../
+SOPC_FILE=../../test_sys.sopcinfo
+NIOS2_BSP_ARGS="\
+--cpu-name nios2_gen2 \
+--set hal.sys_clk_timer none \
+--set hal.timestamp_timer hires_timer \
+--set hal.max_file_descriptors 4 \
+--set hal.enable_instruction_related_exceptions_api true \
+--set hal.linker.allow_code_at_reset 1 \
+--set hal.linker.enable_alt_load 1 \
+--set hal.linker.enable_alt_load_copy_rodata 0 \
+--set hal.linker.enable_alt_load_copy_rwdata 1 \
+--set hal.linker.enable_alt_load_copy_exceptions 1 \
+--set hal.linker.enable_exception_stack 0 \
+--set hal.linker.exception_stack_size 1024 \
+--set hal.linker.exception_stack_memory_region_name ddr_emif \
+--set hal.linker.enable_interrupt_stack 0 \
+--set hal.linker.interrupt_stack_size 1024 \
+--set hal.linker.interrupt_stack_memory_region_name ddr_emif \
+--set hal.stdin jtag_uart \
+--set hal.stdout jtag_uart \
+--set hal.stderr jtag_uart \
+--set hal.log_port none \
+--set hal.make.build_pre_process none \
+--set hal.make.ar_pre_process none \
+--set hal.make.bsp_cflags_defined_symbols none \
+--set hal.make.ar_post_process none \
+--set hal.make.as nios2-elf-gcc \
+--set hal.make.build_post_process none \
+--set hal.make.bsp_cflags_debug -g \
+--set hal.make.ar nios2-elf-ar \
+--set hal.make.rm rm -f \
+--set hal.make.cxx_pre_process none \
+--set hal.make.bsp_cflags_warnings -Wall \
+--set hal.make.bsp_arflags -src \
+--set hal.make.bsp_cflags_optimization -Os \
+--set hal.make.as_post_process none \
+--set hal.make.cc_pre_process none \
+--set hal.make.bsp_asflags -Wa,-gdwarf2 \
+--set hal.make.as_pre_process none \
+--set hal.make.bsp_cflags_undefined_symbols none \
+--set hal.make.cc_post_process none \
+--set hal.make.cxx_post_process none \
+--set hal.make.cc nios2-elf-gcc -xc \
+--set hal.make.bsp_cxx_flags none \
+--set hal.make.bsp_inc_dirs none \
+--set hal.make.cxx nios2-elf-gcc -xc++ \
+--set hal.make.bsp_cflags_user_flags none \
+--set hal.make.ignore_system_derived.sopc_system_id 0 \
+--set hal.make.ignore_system_derived.sopc_system_timestamp 0 \
+--set hal.make.ignore_system_derived.sopc_system_base_address 0 \
+--set hal.make.ignore_system_derived.sopc_simulation_enabled 0 \
+--set hal.make.ignore_system_derived.fpu_present 0 \
+--set hal.make.ignore_system_derived.cdx_present 0 \
+--set hal.make.ignore_system_derived.bmx_present 0 \
+--set hal.make.ignore_system_derived.hardware_multiplier_present 0 \
+--set hal.make.ignore_system_derived.hardware_mulx_present 0 \
+--set hal.make.ignore_system_derived.hardware_divide_present 0 \
+--set hal.make.ignore_system_derived.debug_core_present 0 \
+--set hal.make.ignore_system_derived.big_endian 0 \
+--set hal.make.ignore_system_derived.hardware_fp_cust_inst_divider_present 0 \
+--set hal.make.ignore_system_derived.hardware_fp_cust_inst_no_divider_present 0 \
+--set hal.enable_exit 0 \
+--set hal.enable_small_c_library 1 \
+--set hal.enable_clean_exit 0 \
+--set hal.enable_runtime_stack_checking 0 \
+--set hal.enable_gprof 0 \
+--set hal.enable_c_plus_plus 0 \
+--set hal.enable_reduced_device_drivers 1 \
+--set hal.enable_lightweight_device_driver_api 1 \
+--set hal.enable_mul_div_emulation 0 \
+--set hal.enable_sim_optimize 0 \
+--set hal.enable_sopc_sysid_check 1 \
+--set hal.custom_newlib_flags none \
+--set hal.log_flags 0 \
+--set altera_avalon_jtag_uart_driver.enable_small_driver false \
+--set altera_avalon_jtag_uart_driver.enable_jtag_uart_ignore_fifo_full_error false \
+--cmd add_section_mapping .text nios_ocram_8k \
+--cmd add_section_mapping .rodata nios_ocram_8k \
+--cmd add_section_mapping .rwdata nios_ocram_8k \
+--cmd add_section_mapping .bss nios_ocram_8k \
+--cmd add_section_mapping .heap nios_ocram_8k \
+--cmd add_section_mapping .stack nios_ocram_8k \
+--cmd set_driver none ddr_emif \
+--cmd set_driver altera_avalon_timer_driver hires_timer \
+--cmd set_driver altera_avalon_jtag_uart_driver jtag_uart \
+--cmd set_driver altera_avalon_pio_driver led_pio_out \
+--cmd set_driver none nios_ocram_8k \
+--cmd set_driver reset_debouncer_driver resets_cpu_reset_n_reset_debouncer \
+--cmd set_driver event_timer_driver resets_ddr_event_timer_ddr_cal_success \
+--cmd set_driver event_timer_driver resets_ddr_event_timer_ddr_init_done \
+--cmd set_driver pll_reset_monitor_driver resets_ddr_pll_reset_monitor \
+--cmd set_driver pll_reset_monitor_driver resets_pll_pll_reset_monitor \
+--cmd set_driver reset_event_counter_driver resets_rec_cpu_reset_n \
+--cmd set_driver reset_event_counter_driver resets_rec_ddr_cal_fail \
+--cmd set_driver reset_event_counter_driver resets_rec_ddr_lock_failure \
+--cmd set_driver reset_event_counter_driver resets_rec_ddr_lost_cal_success \
+--cmd set_driver reset_event_counter_driver resets_rec_ddr_lost_init_done \
+--cmd set_driver reset_event_counter_driver resets_rec_ddr_timeout_cal_success \
+--cmd set_driver reset_event_counter_driver resets_rec_ddr_timeout_init_done \
+--cmd set_driver reset_event_counter_driver resets_rec_debug_resets \
+--cmd set_driver reset_event_counter_driver resets_rec_pll_lock_failure \
+--cmd set_driver altera_avalon_sysid_qsys_driver sysid \
+"
+
+set -x
+
+nios2-bsp \
+	"${BSP_TYPE:?}" \
+	"${BSP_DIR:?}" \
+	"${SOPC_FILE:?}" \
+	${NIOS2_BSP_ARGS:?} || {
+	    echo "nios2-bsp failed"
+	    exit 1
+	}
+
+make || {
+    echo "make failed"
+    exit 1
+}
+
+set +x
+
+exit 0
+

@@ -1,0 +1,16 @@
+howto_qsys_supplemental_reset_components.tex
+	This is a LaTeX source file that is used to generate the PDF
+	documentation for this project.
+
+images/
+	This directory contains the screen shot PNG image files that are used
+	in the PDF documentation for this project.
+
+build_documentation.sh
+	This is a build script that will create the PDF documentation for this
+	project.
+
+qsys_templates/
+	This directory contains the Qsys system templates that were used for the
+	example system screen shots used in the PDF documentation for this
+	project.
