@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2016-2021 Intel Corporation
+ *
+ * SPDX-License-Identifier: MIT-0
+ */
+#ifndef __RESET_EVENT_COUNTER_REGS_H__
+#define __RESET_EVENT_COUNTER_REGS_H__
+
+#include <io.h>
+
+#define IORD_RESET_EVENT_COUNTER(base)	IORD(base, 0)
+
+#define RESET_EVENT_COUNTER_DEASSERT_COUNT_MASK	(0xFFFF0000)
+#define RESET_EVENT_COUNTER_DEASSERT_COUNT_OFST	(16)
+
+#define RESET_EVENT_COUNTER_ASSERT_COUNT_MASK	(0x0000FFFF)
+#define RESET_EVENT_COUNTER_ASSERT_COUNT_OFST	(0)
+
+#endif /* __RESET_EVENT_COUNTER_REGS_H__ */

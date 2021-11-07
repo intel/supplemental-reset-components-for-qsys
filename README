@@ -1,0 +1,250 @@
+TABLE OF CONTENTS
+              NOTICE - change in terminology since original release
+	 LAST UPDATE - when was this project last updated?
+	     LICENSE - what licensing is used in this project?
+	 DOWNLOADING - how do you acquire this project?
+	 DESCRIPTION - why does this project exist?
+	    CONTENTS - what is provided in this project?
+	       USAGE - how do you use this project?
+	REQUIREMENTS - what do you need to make use of this project?
+	    SEE ALSO - other content or topics related to this project?
+
+NOTICE
+
+This project was originally released to provide components used by the Altera
+Qsys tool which was renamed and branded by Intel as Platform Designer.  For the
+most part, the term 'qsys' has been left in all of the component implementations
+and documentation within this project.  A couple of updates to this README have
+been made to reference Platform Designer where the context allowed.
+
+LAST UPDATE
+
+November 6, 2021
+
+LICENSE
+
+With this release of this project the license is changed from the "MIT" license
+to the "MIT No Attribution" license.  Please see the 'LICENSE' text file in the
+top level directory of the repository for license details.
+
+DOWNLOADING
+
+This project is stored in the GitHub 'intel' organization under the repository
+named 'supplemental-reset-components-for-qsys'.  There are a number of ways that
+you can download the contents of this project.
+
+If you wish to download the entire repo, you can clone the repo using 'git' or
+download an archive of the repo using a web download utility like 'curl' or
+'wget', or even the GitHub download GUI from a web browser.
+
+To clone the project repo with 'git' use a command like this:
+
+git clone https://github.com/intel/supplemental-reset-components-for-qsys.git
+
+To download an archive of the project with 'wget' or 'curl' use a command like
+this:
+
+wget https://github.com/intel/supplemental-reset-components-for-qsys/archive/master.zip
+curl https://github.com/intel/supplemental-reset-components-for-qsys/archive/master.zip
+
+This is the format of the URL for archive download:
+
+https://github.com/intel/<REPO-NAME>/archive/<BRANCH-NAME>.zip
+https://github.com/intel/<REPO-NAME>/archive/<TAG-NAME>.zip
+https://github.com/intel/<REPO-NAME>/archive/<COMMIT-HASH>.zip
+
+You can download a specific archive of the project based on the branch name that
+you would like to download, or the tag name of a commit point that you would
+like to download, or the commit hash of the commit point that you would like to
+download.  The branch name, tag name, or commit hash for any of these archive
+points can be discovered by viewing the appropriate information on the GitHub
+repo web page.
+
+This project makes two types of releases available to users for download, the
+master branch release tags which includes all of the Platform Designer
+components in the project as well as all the development overhead for simulation
+test models and synthesis test models, or the components-only release tags
+for users who simply want the Platform Designer components alone without all of
+the component development overhead material.
+
+DESCRIPTION
+
+This project provides a number of Platform Designer components that can be used
+in various reset scenarios that arise in a variety of Platform Designer system
+architectures.  These components can deal with power on reset needs, pll reset
+and pll monitoring needs, delayed reset assertion needs, and reset signal
+debouncing needs. There are also components that can count events in the system
+related to reset and system initialization and configuration delays, and there
+is a trivial Avalon MM default slave component which can signal various
+responses to undecoded transactions in the system, which may indicate that the
+system should be reset or recovered in some way.
+
+CONTENTS
+
+The following objects appear in the top level directory of this project.
+
+./development
+	This directory contains the development test scripts that are used to
+	build and validate the simulation and synthesis tests for the components
+	in this project.
+
+./documentation
+	This directory contains the source materials used to generate the PDF
+	documentation for this project.  Please see the README file in this
+	directory for more information on the contents.
+
+./reset_components.ipx
+	This IPX file informs the Quartus Librarian where to look for each of
+	the components in this project.
+
+./conduit_adapters
+./conduit_adapters/conduit_remap
+./conduit_adapters/emif_status_breakout
+./conduit_adapters/pll_sharing_to_pll_locked
+	This directory contains various Platform Designer components that are
+	useful when manipulating various types of conduits and breaking out
+	commonly required conduits from typical PLL and EMIF cores in Platform
+	Designer.
+
+./event_timer
+	This directory contains a component that is used to capture the
+	occurrence of an event, like the EMIF calibration sequence completing
+	successfully, or the EMIF initialization sequence completing. Please see
+	the comment at the top of the HDL source file in this directory for more
+	details on how this component works.
+
+./pll_reset_monitor
+	This directory contains a component that is used to generate reset for a
+	PLL and monitor the acquisition of lock for the PLL, and then monitor
+	for PLL lock failures.  Please see the comment at the top of the HDL
+	source file in this directory for more details on how this component
+	works.
+
+./power_on_reset
+	This directory contains a component that produces a power on reset
+	strobe.  Please see the comment at the top of the HDL source file in
+	this directory for more details on how this component works.
+
+./reset_assertion_delay
+	This directory contains a component that is used to generate a delayed
+	reset following an initial reset.  This is most useful in situations
+	where you have a system that is clocked by a PLL and you need to reset
+	the PLL, however your system may contain synchronous reset domains which
+	you wish to reset prior to the PLL, since the PLL clock output will stop
+	running once you assert reset to the PLL.  Please see the comment at the
+	top of the HDL source file in this directory for more details on how
+	this component works.
+
+./reset_debouncer
+	This directory contains a component that is used to debounce a noisy
+	reset input source, such as that provided by an external push button
+	switch, which may produce noise glitches and spikes as the button is
+	mechanically pressed and released.  Please see the comment at the top of
+	the HDL source file in this directory for more details on how this
+	component works.
+
+./reset_event_counter
+	This directory contains a component that is used to count reset events.
+	This can be useful for system health monitoring and system failure
+	diagnosis.  Please see the comment at the top of the HDL source file in
+	this directory for more details on how this component works.
+
+./reset_until_ack
+	This directory contains a component that is used to extend the reset
+	assertion into a given reset domain until an acknowledgment is received
+	that it has been taken.  Please see the comment at the top of the HDL
+	source file in this directory for more details on how this component
+	works.
+
+./trivial_default_avalon_slave
+	This directory contains a component that is used as a default slave in a
+	Platform Designer system.  Please see the comment at the top of the HDL
+	source file in this directory for more details on how this component
+	works.
+
+USAGE
+
+These components are provided for use in the Platform Designer embedded system
+integration tool that is provided in the Intel Quartus Prime Design Software
+installation.
+
+To use these components, you can either place this component directory in a
+directory called 'ip' that you create in your Quartus project directory, or you
+can create an IPX file for your Quartus project which points to this project's
+IPX file to incorporate these components into your Quartus/Platform Designer
+environment.
+
+As an example this is what your Quartus project directory structure would look
+like if you use the 'ip' directory approach:
+
+my_quartus_project/
+└── ip/
+    └── reset_components/
+        ├── conduit_adapters/
+        ├── event_timer/
+        ├── pll_reset_monitor/
+        ├── power_on_reset/
+        ├── README
+        ├── reset_assertion_delay/
+        ├── reset_components.ipx
+        ├── reset_debouncer/
+        ├── reset_event_counter/
+        ├── reset_until_ack/
+        └── trivial_default_avalon_slave/
+
+Alternatively, you may create an IPX file called my_components.ipx that looks
+something like this:
+<library>
+        <path path="PATH-TO-RESET-COMPONENTS-DIRECTORY/*" />
+</library>
+
+You would place the my_components.ipx file in your Quartus project directory and
+you would put the actual path to the reset components directory in the path
+described in the IPX file.  That would be the relative or absolute path to the
+directory that contains the reset_components.ipx file.  So if your file system
+looked something like this:
+
+my_quartus_project/
+└── my_components.ipx
+
+someplace_else/
+└── reset_components/
+    ├── conduit_adapters/
+    ├── event_timer/
+    ├── pll_reset_monitor/
+    ├── power_on_reset/
+    ├── README
+    ├── reset_assertion_delay/
+    ├── reset_components.ipx
+    ├── reset_debouncer/
+    ├── reset_event_counter/
+    ├── reset_until_ack/
+    └── trivial_default_avalon_slave/
+
+Then your my_components.ipx file would look something like this:
+<library>
+        <path path="<REL OR ABS PREFIX>/someplace_else/reset_components/*" />
+</library>
+
+REQUIREMENTS
+
+This project development began in the Altera ACDS 15.1.2 tools environment but
+it should work fine in future tools releases as well.  There should be no device
+specific requirements with any of the components in this project.  Besides logic
+elements to implement the logic in these components, there are no other specific
+device resources required.  A stable free running clock is about as strong as
+the requirements get, however some of these components can tolerate a pll
+derived clock as well.
+
+SEE ALSO
+
+For more information on practical use cases for the Supplemental Reset
+Components for Qsys, please see the 'HOWTO' PDF document in the documentation
+directory of this project.
+
+For more information about Platform Designer please see this landing page on
+Intel.com which points to numerous Platform Designer support resources including
+documentation, training materials, tutorials, specifications, etc:
+
+https://www.intel.com/content/www/us/en/programmable/products/design-software/fpga-design/quartus-prime/features/qts-platform-designer.html
+
