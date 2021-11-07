@@ -1,23 +1,7 @@
 /*
- * Copyright (c) 2016 Intel Corporation
+ * Copyright (c) 2016-2021 Intel Corporation
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
+ * SPDX-License-Identifier: MIT-0
  */
 `timescale 1 ps / 1 ps
 
@@ -88,11 +72,11 @@ initial begin
 		print(VERBOSITY_ERROR, message);
 		test_success <= 1'b0;
 	end
-	
+
 	for(int i = 0 ; i < 4 ; i++) begin
 		next_expected_value = next_expected_value + 32'h0001_0000;
 		wait(`TEST_SYS_INST.reset_event_counter_0_s0_readdata == next_expected_value);
-	
+
 		`SLAVE_S0_BFM.set_command_address(0);
 		`SLAVE_S0_BFM.set_command_byte_enable('hF, 0);
 		`SLAVE_S0_BFM.set_command_burst_count('h1);
@@ -123,7 +107,7 @@ initial begin
 
 		next_expected_value = next_expected_value + 32'h0000_0001;
 		wait(`TEST_SYS_INST.reset_event_counter_0_s0_readdata == next_expected_value);
-	
+
 		`SLAVE_S0_BFM.set_command_address(0);
 		`SLAVE_S0_BFM.set_command_byte_enable('hF, 0);
 		`SLAVE_S0_BFM.set_command_burst_count('h1);
@@ -192,11 +176,11 @@ initial begin
 		print(VERBOSITY_ERROR, message);
 		test_success <= 1'b0;
 	end
-	
+
 	for(int i = 0 ; i < 4 ; i++) begin
 		next_expected_value = next_expected_value + 32'h0000_0001;
 		wait(`TEST_SYS_INST.reset_event_counter_0_s0_readdata == next_expected_value);
-	
+
 		`SLAVE_S0_BFM.set_command_address(0);
 		`SLAVE_S0_BFM.set_command_byte_enable('hF, 0);
 		`SLAVE_S0_BFM.set_command_burst_count('h1);
@@ -227,7 +211,7 @@ initial begin
 
 		next_expected_value = next_expected_value + 32'h0001_0000;
 		wait(`TEST_SYS_INST.reset_event_counter_0_s0_readdata == next_expected_value);
-	
+
 		`SLAVE_S0_BFM.set_command_address(0);
 		`SLAVE_S0_BFM.set_command_byte_enable('hF, 0);
 		`SLAVE_S0_BFM.set_command_burst_count('h1);
@@ -285,7 +269,7 @@ initial begin
         end
 
 	set_verbosity( VERBOSITY_WARNING );
-	
+
 	next_expected_value = 32'h0000_0000;
 	for(int i = 0 ; i < 'h0000_FFFF ; i++) begin
 		wait(`TEST_SYS_INST.reset_event_counter_0_s0_readdata == next_expected_value);
@@ -295,9 +279,9 @@ initial begin
 		`RESET_EVENT_BFM.reset_assert();
 		next_expected_value = next_expected_value + 32'h0000_0001;
 	end
-	
+
 	set_verbosity( `VERBOSITY );
-	
+
         expected_time = 64'd23597650000;
         cur_time = $time;
         if(expected_time == cur_time) begin

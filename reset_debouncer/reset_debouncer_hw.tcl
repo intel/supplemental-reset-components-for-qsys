@@ -1,30 +1,14 @@
 #
-# Copyright (c) 2016 Intel Corporation
+# Copyright (c) 2016-2021 Intel Corporation
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to
-# deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-# IN THE SOFTWARE.
+# SPDX-License-Identifier: MIT-0
 #
 package require -exact qsys 15.1
 
 
-# 
+#
 # module reset_debouncer
-# 
+#
 set_module_property DESCRIPTION "Debounce external push button reset sources."
 set_module_property NAME reset_debouncer
 set_module_property VERSION 1.0
@@ -42,9 +26,9 @@ set_module_property ELABORATION_CALLBACK elaborate
 set_module_property VALIDATION_CALLBACK validate
 
 
-# 
+#
 # file sets
-# 
+#
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL reset_debouncer
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
@@ -65,9 +49,9 @@ set_fileset_property SIM_VHDL ENABLE_FILE_OVERWRITE_MODE true
 add_fileset_file reset_debouncer.v VERILOG PATH reset_debouncer.v
 
 
-# 
+#
 # parameters
-# 
+#
 add_parameter DEBOUNCE_COUNTER_WIDTH INTEGER
 set_parameter_property DEBOUNCE_COUNTER_WIDTH DEFAULT_VALUE 16
 set_parameter_property DEBOUNCE_COUNTER_WIDTH DISPLAY_NAME "Debounce Counter Width"
@@ -113,14 +97,14 @@ set_parameter_property DURATION_STRING HDL_PARAMETER false
 set_parameter_property DURATION_STRING VISIBLE false
 
 
-# 
+#
 # display items
-# 
+#
 
 
-# 
+#
 # connection point debounce_clock
-# 
+#
 add_interface debounce_clock clock end
 set_interface_property debounce_clock clockRate 0
 set_interface_property debounce_clock ENABLED true
@@ -132,9 +116,9 @@ set_interface_property debounce_clock SVD_ADDRESS_GROUP ""
 add_interface_port debounce_clock clk clk Input 1
 
 
-# 
+#
 # connection point power_on_reset
-# 
+#
 add_interface power_on_reset reset end
 set_interface_property power_on_reset associatedClock debounce_clock
 set_interface_property power_on_reset synchronousEdges DEASSERT
@@ -147,9 +131,9 @@ set_interface_property power_on_reset SVD_ADDRESS_GROUP ""
 add_interface_port power_on_reset power_on_reset reset Input 1
 
 
-# 
+#
 # connection point reset_input
-# 
+#
 add_interface reset_input reset end
 set_interface_property reset_input associatedClock ""
 set_interface_property reset_input synchronousEdges NONE
@@ -162,9 +146,9 @@ set_interface_property reset_input SVD_ADDRESS_GROUP ""
 add_interface_port reset_input reset_input reset Input 1
 
 
-# 
+#
 # connection point reset_output
-# 
+#
 add_interface reset_output reset start
 set_interface_property reset_output associatedClock debounce_clock
 set_interface_property reset_output associatedDirectReset ""
@@ -179,9 +163,9 @@ set_interface_property reset_output SVD_ADDRESS_GROUP ""
 add_interface_port reset_output reset_output reset Output 1
 
 
-# 
+#
 # connection point s0_clk
-# 
+#
 add_interface s0_clk clock end
 set_interface_property s0_clk clockRate 0
 set_interface_property s0_clk ENABLED true
@@ -193,9 +177,9 @@ set_interface_property s0_clk SVD_ADDRESS_GROUP ""
 add_interface_port s0_clk s0_clk clk Input 1
 
 
-# 
+#
 # connection point s0_reset
-# 
+#
 add_interface s0_reset reset end
 set_interface_property s0_reset associatedClock s0_clk
 set_interface_property s0_reset synchronousEdges DEASSERT
@@ -208,9 +192,9 @@ set_interface_property s0_reset SVD_ADDRESS_GROUP ""
 add_interface_port s0_reset s0_reset reset Input 1
 
 
-# 
+#
 # connection point s0
-# 
+#
 add_interface s0 avalon end
 set_interface_property s0 addressUnits WORDS
 set_interface_property s0 associatedClock s0_clk

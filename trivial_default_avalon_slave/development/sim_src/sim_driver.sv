@@ -1,23 +1,7 @@
 /*
- * Copyright (c) 2016 Intel Corporation
+ * Copyright (c) 2016-2021 Intel Corporation
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
+ * SPDX-License-Identifier: MIT-0
  */
 `timescale 1 ps / 1 ps
 
@@ -83,7 +67,7 @@ initial begin
 	wait(`TEST_SYS_INST.reset_reset_n == 1'b1);
 	for(int i = 0 ; i < 8 ; i++)
 		@(posedge `TEST_SYS_INST.clk_clk);
-	
+
 	// TDAS_0 read
 	`TDAS_0_BFM.set_command_address(0);
 	`TDAS_0_BFM.set_command_byte_enable('hF, 0);
@@ -200,7 +184,7 @@ initial begin
 			@(posedge `TEST_SYS_INST.clk_clk);
 
 		`TDAS_0_BFM.pop_response();
-		
+
 		case(i)
 			 0 : expected_time = 'd1_370_000;
 			 1 : expected_time = 'd1_450_000;
@@ -372,7 +356,7 @@ initial begin
 			@(posedge `TEST_SYS_INST.clk_clk);
 
 		`TDAS_1_BFM.pop_response();
-		
+
 		case(i)
 			 0 : expected_time = 'd2_510_000;
 			 1 : expected_time = 'd2_590_000;
@@ -434,7 +418,7 @@ initial begin
 	@(posedge `TEST_SYS_INST.clk_clk);
         release `TEST_SYS_INST.tdas_2_never_respond_slave_waitrequest;
 	@(posedge `TEST_SYS_INST.clk_clk);
-        
+
 	if(`TDAS_2_BFM.get_response_queue_size() == 0) begin
 	        $sformat(message, "Unable to force TDAS_2 read cycle termination.");
 	        print(VERBOSITY_FAILURE, message);
@@ -473,7 +457,7 @@ initial begin
 	@(posedge `TEST_SYS_INST.clk_clk);
         release `TEST_SYS_INST.tdas_2_never_respond_slave_waitrequest;
 	@(posedge `TEST_SYS_INST.clk_clk);
-        
+
 	if(`TDAS_2_BFM.get_response_queue_size() == 0) begin
 	        $sformat(message, "Unable to force TDAS_2 write cycle termination.");
 	        print(VERBOSITY_FAILURE, message);
@@ -491,7 +475,7 @@ initial begin
 	        print(VERBOSITY_FAILURE, message);
 	        abort_simulation();
 	end
-	
+
 	`TDAS_3_BFM.set_command_address(0);
 	`TDAS_3_BFM.set_command_byte_enable('hF, 0);
 	`TDAS_3_BFM.set_command_burst_count('h1);
@@ -527,7 +511,7 @@ initial begin
 	        print(VERBOSITY_FAILURE, message);
 	        abort_simulation();
 	end
-	
+
 	// reset the system to clear the access event
 	#5000;
 	`RESET_BFM.reset_assert();
@@ -545,7 +529,7 @@ initial begin
 	        print(VERBOSITY_FAILURE, message);
 	        abort_simulation();
 	end
-	
+
 	`TDAS_3_BFM.set_command_address(0);
 	`TDAS_3_BFM.set_command_byte_enable('hF, 0);
 	`TDAS_3_BFM.set_command_burst_count('h1);
@@ -569,7 +553,7 @@ initial begin
 	        print(VERBOSITY_FAILURE, message);
 	        abort_simulation();
 	end
-	
+
 	// clear the access event with clear_event conduit
 	@(posedge `TEST_SYS_INST.clk_clk);
 	@(posedge `TEST_SYS_INST.clk_clk);
@@ -582,7 +566,7 @@ initial begin
 	        print(VERBOSITY_FAILURE, message);
 	        abort_simulation();
 	end
-	
+
 	`TDAS_3_CE_CONDUIT_BFM.set_clear_event(1'b1);
 	@(posedge `TEST_SYS_INST.clk_clk);
 	@(posedge `TEST_SYS_INST.clk_clk);
@@ -591,7 +575,7 @@ initial begin
 	@(posedge `TEST_SYS_INST.clk_clk);
 	@(posedge `TEST_SYS_INST.clk_clk);
 	@(posedge `TEST_SYS_INST.clk_clk);
-	
+
 	if(	(`TEST_SYS_INST.tdas_3_access_events_access_event_reset_reset == 1'b1) |
 		(`TEST_SYS_INST.tdas_3_access_events_access_event_interrupt_irq == 1'b1) |
 		(`TEST_SYS_INST.tdas_3_access_events_access_event_conduit_access_event_conduit == 1'b1)
@@ -600,7 +584,7 @@ initial begin
 	        print(VERBOSITY_FAILURE, message);
 	        abort_simulation();
 	end
-	
+
 	// TDAS_4 read
 	`TDAS_4_BFM.set_command_address(0);
 	`TDAS_4_BFM.set_command_byte_enable('hF, 0);
@@ -666,7 +650,7 @@ initial begin
 	                print(VERBOSITY_ERROR, message);
 	                test_success <= 1'b0;
 	end
-	
+
 	// TDAS_5 read
 	`TDAS_5_BFM.set_command_address(0);
 	`TDAS_5_BFM.set_command_byte_enable('hF, 0);
@@ -701,7 +685,7 @@ initial begin
 	@(posedge `TEST_SYS_INST.clk_clk);
 	@(posedge `TEST_SYS_INST.clk_clk);
 	@(posedge `TEST_SYS_INST.clk_clk);
-        
+
 	if(`TDAS_5_BFM.get_response_queue_size() == 0) begin
 	        $sformat(message, "Unable to force TDAS_5 read cycle termination.");
 	        print(VERBOSITY_FAILURE, message);
@@ -744,7 +728,7 @@ initial begin
 	@(posedge `TEST_SYS_INST.clk_clk);
 	@(posedge `TEST_SYS_INST.clk_clk);
 	@(posedge `TEST_SYS_INST.clk_clk);
-        
+
 	if(`TDAS_5_BFM.get_response_queue_size() == 0) begin
 	        $sformat(message, "Unable to force TDAS_5 write cycle termination.");
 	        print(VERBOSITY_FAILURE, message);

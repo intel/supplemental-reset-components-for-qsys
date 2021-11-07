@@ -1,30 +1,14 @@
 #
-# Copyright (c) 2016 Intel Corporation
+# Copyright (c) 2016-2021 Intel Corporation
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to
-# deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-# IN THE SOFTWARE.
+# SPDX-License-Identifier: MIT-0
 #
 package require -exact qsys 15.1
 
 
-# 
+#
 # module trivial_default_avalon_slave
-# 
+#
 set_module_property DESCRIPTION "A trival avalon slave that can be used as a default slave."
 set_module_property NAME trivial_default_avalon_slave
 set_module_property VERSION 1.0
@@ -42,9 +26,9 @@ set_module_property VALIDATION_CALLBACK validate
 set_module_property ELABORATION_CALLBACK elaborate
 
 
-# 
+#
 # file sets
-# 
+#
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL trivial_default_avalon_slave
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
@@ -64,9 +48,9 @@ set_fileset_property SIM_VHDL ENABLE_FILE_OVERWRITE_MODE false
 add_fileset_file trivial_default_avalon_slave.v VERILOG PATH trivial_default_avalon_slave.v
 
 
-# 
+#
 # parameters
-# 
+#
 add_parameter DATA_BYTES INTEGER
 set_parameter_property DATA_BYTES DEFAULT_VALUE 1
 set_parameter_property DATA_BYTES DISPLAY_NAME "Number of Data Bytes"
@@ -210,14 +194,14 @@ set_parameter_property ENABLE_ACCESS_EVENT_INTERRUPT AFFECTS_VALIDATION true
 set_parameter_property ENABLE_ACCESS_EVENT_INTERRUPT AFFECTS_ELABORATION true
 
 
-# 
+#
 # display items
-# 
+#
 
 
-# 
+#
 # connection point clock
-# 
+#
 add_interface clock clock end
 set_interface_property clock clockRate 0
 set_interface_property clock ENABLED true
@@ -229,9 +213,9 @@ set_interface_property clock SVD_ADDRESS_GROUP ""
 add_interface_port clock clock_clk clk Input 1
 
 
-# 
+#
 # connection point reset
-# 
+#
 add_interface reset reset end
 set_interface_property reset associatedClock clock
 set_interface_property reset synchronousEdges DEASSERT
@@ -244,9 +228,9 @@ set_interface_property reset SVD_ADDRESS_GROUP ""
 add_interface_port reset reset_reset reset Input 1
 
 
-# 
+#
 # connection point slave
-# 
+#
 add_interface slave avalon end
 set_interface_property slave addressUnits WORDS
 set_interface_property slave associatedClock clock
@@ -286,9 +270,9 @@ set_interface_assignment slave embeddedsw.configuration.isNonVolatileStorage 0
 set_interface_assignment slave embeddedsw.configuration.isPrintableDevice 0
 
 
-# 
+#
 # connection point clear_event
-# 
+#
 add_interface clear_event conduit end
 set_interface_property clear_event associatedClock ""
 set_interface_property clear_event associatedReset ""
@@ -301,9 +285,9 @@ set_interface_property clear_event SVD_ADDRESS_GROUP ""
 add_interface_port clear_event clear_event clear_event Input 1
 
 
-# 
+#
 # connection point access_event_conduit
-# 
+#
 add_interface access_event_conduit conduit end
 set_interface_property access_event_conduit associatedClock ""
 set_interface_property access_event_conduit associatedReset ""
@@ -316,9 +300,9 @@ set_interface_property access_event_conduit SVD_ADDRESS_GROUP ""
 add_interface_port access_event_conduit access_event_conduit access_event_conduit Output 1
 
 
-# 
+#
 # connection point access_event_reset
-# 
+#
 add_interface access_event_reset reset start
 set_interface_property access_event_reset associatedClock ""
 set_interface_property access_event_reset associatedDirectReset ""
@@ -333,9 +317,9 @@ set_interface_property access_event_reset SVD_ADDRESS_GROUP ""
 add_interface_port access_event_reset access_event_reset reset Output 1
 
 
-# 
+#
 # connection point access_event_interrupt
-# 
+#
 add_interface access_event_interrupt interrupt end
 set_interface_property access_event_interrupt associatedAddressablePoint ""
 set_interface_property access_event_interrupt bridgedReceiverOffset ""

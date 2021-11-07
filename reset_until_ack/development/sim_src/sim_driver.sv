@@ -1,23 +1,7 @@
 /*
- * Copyright (c) 2016 Intel Corporation
+ * Copyright (c) 2016-2021 Intel Corporation
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
+ * SPDX-License-Identifier: MIT-0
  */
 `timescale 1 ps / 1 ps
 
@@ -65,7 +49,7 @@ initial begin
 		print(VERBOSITY_ERROR, message);
 		test_success <= 1'b0;
 	end
-	
+
 	wait(`RESET_OUT_SIGNAL == 1'b0);
 	expected_time = 'd1_010_000;
 	cur_time = $time;
@@ -77,7 +61,7 @@ initial begin
 		print(VERBOSITY_ERROR, message);
 		test_success <= 1'b0;
 	end
-	
+
 	wait(`RELEASE_RESET_SIGNAL == 1'b0);
 	expected_time = 'd1_050_000;
 	cur_time = $time;
@@ -106,7 +90,7 @@ initial begin
 		print(VERBOSITY_ERROR, message);
 		test_success <= 1'b0;
 	end
-	
+
 	wait(`RESET_OUT_SIGNAL == 1'b1);
 	expected_time = 'd1_090_000;
 	cur_time = $time;
@@ -118,7 +102,7 @@ initial begin
 		print(VERBOSITY_ERROR, message);
 		test_success <= 1'b0;
 	end
-	
+
 	@(posedge `TEST_SYS_INST.rua_clk_in_clk);
 	`ASSERT_RESET_BFM.reset_deassert();
 
@@ -133,7 +117,7 @@ initial begin
 		print(VERBOSITY_ERROR, message);
 		test_success <= 1'b0;
 	end
-	
+
 	@(posedge `TEST_SYS_INST.rua_clk_in_clk);
 
 	`RELEASE_RESET_BFM.reset_assert();
@@ -164,7 +148,7 @@ initial begin
 		print(VERBOSITY_ERROR, message);
 		test_success <= 1'b0;
 	end
-	
+
 	wait(`RELEASE_RESET_SIGNAL == 1'b0);
 	expected_time = 'd1_210_000;
 	cur_time = $time;
@@ -190,7 +174,7 @@ initial begin
 		$sformat(message, "Test failed...");
 		print(VERBOSITY_ERROR, message);
 	end
-	
+
 	$stop;
 
 end // initial

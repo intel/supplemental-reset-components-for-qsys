@@ -1,23 +1,7 @@
 /*
- * Copyright (c) 2016 Intel Corporation
+ * Copyright (c) 2016-2021 Intel Corporation
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
+ * SPDX-License-Identifier: MIT-0
  */
 `timescale 1 ps / 1 ps
 
@@ -71,7 +55,7 @@ initial begin
 
 	// test normal POR operation
 	next_expected_value <= 32'h21000000;
-	
+
 	for(int j = 0 ; j < 34 ; j++) begin
 		for(int i = 0 ; i < 64 ; i++)
 		        @(posedge `TEST_SYS_INST.reset_debouncer_0_debounce_clock_clk);
@@ -80,7 +64,7 @@ initial begin
 		`RESET_INPUT_BFM.reset_assert();
 		#1000;
 		`RESET_INPUT_BFM.reset_deassert();
-	
+
 		for(int i = 0 ; i < 64 ; i++)
 		        @(posedge `TEST_SYS_INST.reset_debouncer_0_debounce_clock_clk);
 
@@ -109,7 +93,7 @@ initial begin
 		        print(VERBOSITY_ERROR, message);
 		        test_success <= 1'b0;
 		end
-		
+
 		if(j == 0) begin
 			next_expected_value <= 32'h22000081;
 		end else begin
@@ -119,11 +103,11 @@ initial begin
 				next_expected_value <= next_expected_value + 32'h01000082;
 			end
 		end
-		
+
 	end // for(int j = 0 ; j < 34 ; j++)
 
 	wait(`TEST_SYS_INST.reset_debouncer_0_reset_output_reset == 1'b0);
-	
+
 	expected_time = 'd1313530000;
 	cur_time = $time;
 	if(expected_time == cur_time) begin
@@ -174,7 +158,7 @@ initial begin
 	        print(VERBOSITY_ERROR, message);
 	        test_success <= 1'b0;
 	end
-	
+
 	`RESET_INPUT_BFM.reset_assert();
 
         for(int i = 0 ; i < 'hFFFF ; i++)
@@ -207,11 +191,11 @@ initial begin
 	        print(VERBOSITY_ERROR, message);
 	        test_success <= 1'b0;
 	end
-	
+
 	`RESET_INPUT_BFM.reset_deassert();
 
 	wait(`TEST_SYS_INST.reset_debouncer_0_reset_output_reset == 1'b0);
-	
+
 	expected_time = 'd3936850000;
 	cur_time = $time;
 	if(expected_time == cur_time) begin
@@ -250,7 +234,7 @@ initial begin
 	        print(VERBOSITY_ERROR, message);
 	        test_success <= 1'b0;
 	end
-	
+
 	// finish
         @(posedge `TEST_SYS_INST.reset_debouncer_0_s0_clk_clk);
         if(test_success == 1'b1) begin

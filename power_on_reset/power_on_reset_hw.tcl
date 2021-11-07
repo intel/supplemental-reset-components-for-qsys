@@ -1,30 +1,14 @@
 #
-# Copyright (c) 2016 Intel Corporation
+# Copyright (c) 2016-2021 Intel Corporation
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to
-# deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-# IN THE SOFTWARE.
+# SPDX-License-Identifier: MIT-0
 #
 package require -exact qsys 15.1
 
 
-# 
+#
 # module power_on_reset
-# 
+#
 set_module_property DESCRIPTION "Create a power on reset pulse."
 set_module_property NAME power_on_reset
 set_module_property VERSION 1.0
@@ -42,9 +26,9 @@ set_module_property ELABORATION_CALLBACK elaborate
 set_module_property VALIDATION_CALLBACK validate
 
 
-# 
+#
 # file sets
-# 
+#
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL power_on_reset
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
@@ -64,9 +48,9 @@ set_fileset_property SIM_VHDL ENABLE_FILE_OVERWRITE_MODE true
 add_fileset_file power_on_reset.v VERILOG PATH power_on_reset.v
 
 
-# 
+#
 # parameters
-# 
+#
 add_parameter POR_COUNT INTEGER
 set_parameter_property POR_COUNT DEFAULT_VALUE 20
 set_parameter_property POR_COUNT DISPLAY_NAME "Power On Reset Count"
@@ -112,14 +96,14 @@ set_parameter_property DURATION_STRING HDL_PARAMETER false
 set_parameter_property DURATION_STRING VISIBLE false
 
 
-# 
+#
 # display items
-# 
+#
 
 
-# 
+#
 # connection point clock
-# 
+#
 add_interface clock clock end
 set_interface_property clock clockRate 0
 set_interface_property clock ENABLED true
@@ -131,9 +115,9 @@ set_interface_property clock SVD_ADDRESS_GROUP ""
 add_interface_port clock clk clk Input 1
 
 
-# 
+#
 # connection point reset
-# 
+#
 add_interface reset reset start
 set_interface_property reset associatedClock clock
 set_interface_property reset associatedDirectReset ""

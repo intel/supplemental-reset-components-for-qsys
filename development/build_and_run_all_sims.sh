@@ -1,24 +1,8 @@
 #!/bin/bash
 #
-# Copyright (c) 2016 Intel Corporation
+# Copyright (c) 2016-2021 Intel Corporation
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to
-# deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-# IN THE SOFTWARE.
+# SPDX-License-Identifier: MIT-0
 #
 
 #
@@ -120,11 +104,11 @@ wait ${TRIVIAL_DEFAULT_AVALON_SLAVE_PID} || { EXIT_VALUE=1; echo "ERROR:TRIVIAL_
 ../pll_reset_monitor/development/build_and_run_testbench.sh 04 \
 	>> "${BUILD_LOGS:?}"/pll_reset_monitor_log.txt 2>&1 \
 	|| { EXIT_VALUE=1; echo "ERROR:PLL_RESET_MONITOR";}
-	
+
 ../power_on_reset/development/build_and_run_testbench.sh 04 \
 	>> "${BUILD_LOGS:?}"/power_on_reset_log.txt 2>&1 \
 	|| { EXIT_VALUE=1; echo "ERROR:POWER_ON_RESET";}
-	
+
 ../reset_assertion_delay/development/build_and_run_testbench.sh 04 \
 	>> "${BUILD_LOGS:?}"/reset_assertion_delay_log.txt 2>&1 \
 	|| { EXIT_VALUE=1; echo "ERROR:RESET_ASSERTION_DELAY";}

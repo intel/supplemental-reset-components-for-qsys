@@ -1,4 +1,5 @@
 TABLE OF CONTENTS
+              NOTICE - change in terminology since original release
 	 LAST UPDATE - when was this project last updated?
 	     LICENSE - what licensing is used in this project?
 	 DOWNLOADING - how do you acquire this project?
@@ -8,18 +9,27 @@ TABLE OF CONTENTS
 	REQUIREMENTS - what do you need to make use of this project?
 	    SEE ALSO - other content or topics related to this project?
 
+NOTICE
+
+This project was originally released to provide components used by the Altera
+Qsys tool which was renamed and branded by Intel as Platform Designer.  For the
+most part, the term 'qsys' has been left in all of the component implementations
+and documentation within this project.  A couple of updates to this README have
+been made to reference Platform Designer where the context allowed.
+
 LAST UPDATE
 
-September 16, 2016
+November 6, 2021
 
 LICENSE
 
-This project is licensed under the MIT license.  Please see the 'LICENSE' text
-file in the top level directory of the repository for license details.
+With this release of this project the license is changed from the "MIT" license
+to the "MIT No Attribution" license.  Please see the 'LICENSE' text file in the
+top level directory of the repository for license details.
 
 DOWNLOADING
 
-This project is stored in the GitHub '01org' organization under the repository
+This project is stored in the GitHub 'intel' organization under the repository
 named 'supplemental-reset-components-for-qsys'.  There are a number of ways that
 you can download the contents of this project.
 
@@ -29,19 +39,19 @@ download an archive of the repo using a web download utility like 'curl' or
 
 To clone the project repo with 'git' use a command like this:
 
-git clone https://github.com/01org/supplemental-reset-components-for-qsys.git
+git clone https://github.com/intel/supplemental-reset-components-for-qsys.git
 
 To download an archive of the project with 'wget' or 'curl' use a command like
 this:
 
-wget https://github.com/01org/supplemental-reset-components-for-qsys/archive/master.zip
-curl https://github.com/01org/supplemental-reset-components-for-qsys/archive/master.zip
+wget https://github.com/intel/supplemental-reset-components-for-qsys/archive/master.zip
+curl https://github.com/intel/supplemental-reset-components-for-qsys/archive/master.zip
 
 This is the format of the URL for archive download:
 
-https://github.com/01org/<REPO-NAME>/archive/<BRANCH-NAME>.zip
-https://github.com/01org/<REPO-NAME>/archive/<TAG-NAME>.zip
-https://github.com/01org/<REPO-NAME>/archive/<COMMIT-HASH>.zip
+https://github.com/intel/<REPO-NAME>/archive/<BRANCH-NAME>.zip
+https://github.com/intel/<REPO-NAME>/archive/<TAG-NAME>.zip
+https://github.com/intel/<REPO-NAME>/archive/<COMMIT-HASH>.zip
 
 You can download a specific archive of the project based on the branch name that
 you would like to download, or the tag name of a commit point that you would
@@ -51,23 +61,23 @@ points can be discovered by viewing the appropriate information on the GitHub
 repo web page.
 
 This project makes two types of releases available to users for download, the
-master branch release tags which includes all of the Qsys components in the
-project as well as all the development overhead for simulation test models and
-synthesis test models, or the components-only release tags for users who simply
-want the Qsys components alone without all of the component development overhead
-material.
+master branch release tags which includes all of the Platform Designer
+components in the project as well as all the development overhead for simulation
+test models and synthesis test models, or the components-only release tags
+for users who simply want the Platform Designer components alone without all of
+the component development overhead material.
 
 DESCRIPTION
 
-This project provides a number of Qsys components that can be used in various
-reset scenarios that arise in a variety of Qsys system architectures.  These
-components can deal with power on reset needs, pll reset and pll monitoring
-needs, delayed reset assertion needs, and reset signal debouncing needs. There
-are also components that can count events in the system related to reset and
-system initialization and configuration delays, and there is a trivial Avalon MM
-default slave component which can signal various responses to undecoded
-transactions in the system, which may indicate that the system should be reset
-or recovered in some way.
+This project provides a number of Platform Designer components that can be used
+in various reset scenarios that arise in a variety of Platform Designer system
+architectures.  These components can deal with power on reset needs, pll reset
+and pll monitoring needs, delayed reset assertion needs, and reset signal
+debouncing needs. There are also components that can count events in the system
+related to reset and system initialization and configuration delays, and there
+is a trivial Avalon MM default slave component which can signal various
+responses to undecoded transactions in the system, which may indicate that the
+system should be reset or recovered in some way.
 
 CONTENTS
 
@@ -86,14 +96,15 @@ The following objects appear in the top level directory of this project.
 ./reset_components.ipx
 	This IPX file informs the Quartus Librarian where to look for each of
 	the components in this project.
-	
+
 ./conduit_adapters
 ./conduit_adapters/conduit_remap
 ./conduit_adapters/emif_status_breakout
 ./conduit_adapters/pll_sharing_to_pll_locked
-	This directory contains various Qsys components that are useful when
-	manipulating various types of conduits and breaking out commonly
-	required conduits from typical PLL and EMIF cores in Qsys.
+	This directory contains various Platform Designer components that are
+	useful when manipulating various types of conduits and breaking out
+	commonly required conduits from typical PLL and EMIF cores in Platform
+	Designer.
 
 ./event_timer
 	This directory contains a component that is used to capture the
@@ -147,18 +158,21 @@ The following objects appear in the top level directory of this project.
 
 ./trivial_default_avalon_slave
 	This directory contains a component that is used as a default slave in a
-	Qsys system.  Please see the comment at the top of the HDL source file
-	in this directory for more details on how this component works.
+	Platform Designer system.  Please see the comment at the top of the HDL
+	source file in this directory for more details on how this component
+	works.
 
 USAGE
 
-These components are provided for use in the Altera Qsys embedded system
-integration tool that is provided in the Altera ACDS installation.
+These components are provided for use in the Platform Designer embedded system
+integration tool that is provided in the Intel Quartus Prime Design Software
+installation.
 
 To use these components, you can either place this component directory in a
 directory called 'ip' that you create in your Quartus project directory, or you
 can create an IPX file for your Quartus project which points to this project's
-IPX file to incorporate these components into your Quartus/Qsys environment.
+IPX file to incorporate these components into your Quartus/Platform Designer
+environment.
 
 As an example this is what your Quartus project directory structure would look
 like if you use the 'ip' directory approach:
@@ -228,9 +242,9 @@ For more information on practical use cases for the Supplemental Reset
 Components for Qsys, please see the 'HOWTO' PDF document in the documentation
 directory of this project.
 
-For more information about Qsys please see this landing page on Altera.com which
-points to numerous Qsys support resources including documentation, training
-materials, tutorials, specifications, etc:
+For more information about Platform Designer please see this landing page on
+Intel.com which points to numerous Platform Designer support resources including
+documentation, training materials, tutorials, specifications, etc:
 
-https://www.altera.com/support/support-resources/design-software/qsys.html
+https://www.intel.com/content/www/us/en/programmable/products/design-software/fpga-design/quartus-prime/features/qts-platform-designer.html
 

@@ -1,24 +1,8 @@
 #!/bin/sh
 #
-# Copyright (c) 2016 Intel Corporation
+# Copyright (c) 2016-2021 Intel Corporation
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to
-# deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-# IN THE SOFTWARE.
+# SPDX-License-Identifier: MIT-0
 #
 
 #
@@ -96,7 +80,7 @@ for MODULE in $(seq 1 ${COUNT:?})
 do
 	# get the module class name
 	CLASSNAME=$(xmllint --xpath "string(SopcSystem/module[${MODULE:?}]/className)" "${SWINFO_INPUT_FILE:?}")
-	
+
 	# only process the module classes that we expect to handle
 	case "${CLASSNAME:?}" in
 		event_timer | \
@@ -109,33 +93,33 @@ do
 
 		# get the module name
 		NAME=$(xmllint --xpath "string(SopcSystem/module[${MODULE:?}]/name)" "${SWINFO_INPUT_FILE:?}")
-		
+
 		# check to see if we have any assignments to process
 		ASSIGNMENT_COUNT=$(xmllint --xpath "count(SopcSystem/module[${MODULE:?}]/assignment)" "${SWINFO_INPUT_FILE:?}")
-		
+
 		[ ${ASSIGNMENT_COUNT:?} -lt "1" ] && {
 			echo "" >&2
 			echo "ERROR: in module '${MODULE:?}' count(*/assignment) did not return 1 or greater..." >&2
 			echo "" >&2
 			exit 1
 		}
-		
+
 		# write the module preamble
 		echo "/*" >> "${OUTPUT_FILENAME:?}"
 		echo " * module '${NAME:?}' of type '${CLASSNAME:?}'" >> "${OUTPUT_FILENAME:?}"
 		echo " *" >> "${OUTPUT_FILENAME:?}"
 		echo " */" >> "${OUTPUT_FILENAME:?}"
 		echo "" >> "${OUTPUT_FILENAME:?}"
-		
+
 		# process each assignment
 		for ASSIGNMENT_INDEX in $(seq 1 ${ASSIGNMENT_COUNT:?})
 		do
 			# get the assignment name
 			ASSIGNMENT_NAME=$(xmllint --xpath "string(SopcSystem/module[${MODULE:?}]/assignment[${ASSIGNMENT_INDEX:?}]/name)" "${SWINFO_INPUT_FILE:?}")
-			
+
 			# get the assignment value
 			ASSIGNMENT_VALUE=$(xmllint --xpath "string(SopcSystem/module[${MODULE:?}]/assignment[${ASSIGNMENT_INDEX:?}]/value)" "${SWINFO_INPUT_FILE:?}")
-			
+
 			# write the C macro for this assignment
 			echo "#define RMA_${NAME^^}_${ASSIGNMENT_NAME##*.} (${ASSIGNMENT_VALUE:?})" >> "${OUTPUT_FILENAME:?}"
 		done

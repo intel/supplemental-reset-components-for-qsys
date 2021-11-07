@@ -1,23 +1,7 @@
 #
-# Copyright (c) 2016 Intel Corporation
+# Copyright (c) 2016-2021 Intel Corporation
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to
-# deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-# IN THE SOFTWARE.
+# SPDX-License-Identifier: MIT-0
 #
 while read -r NEXT_FUNCTION
 do
@@ -37,7 +21,7 @@ echo -e "\nUse 'repo-maint-list-all-functions' to view all functions installed.\
 repo-maint-update-repo-maintenance-script () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-update-repo-maintenance-script
 #
@@ -66,27 +50,11 @@ EOF
     };
     REPO_MAINT_SRC=".scripts/repo-maintenance.src";
     mkdir -p "$(dirname "${REPO_MAINT_SRC:?}")";
-    cat > "${REPO_MAINT_SRC:?}"  <<EOF
+    cat > "${REPO_MAINT_SRC:?}" <<EOF
 #
-# Copyright (c) 2016 Intel Corporation
+# Copyright (c) 2016-2021 Intel Corporation
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to
-# deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-# IN THE SOFTWARE.
+# SPDX-License-Identifier: MIT-0
 #
 while read -r NEXT_FUNCTION
 do
@@ -103,7 +71,7 @@ EOF
 
     while read -r NEXT_FUNCTION; do
         [ -n "${NEXT_FUNCTION}" ] && { 
-            cat >> "${REPO_MAINT_SRC:?}"  <<EOF
+            cat >> "${REPO_MAINT_SRC:?}" <<EOF
 
 #-------------------------------------------------------------------------------
 # ${NEXT_FUNCTION}
@@ -128,7 +96,7 @@ repo-maint-validate-release-era-string
 repo-maint-validate-sub-release-branch-prefix
 EOF
 )";
-    cat  <<EOF || 
+    cat <<EOF || 
 
 Successfully updated '${REPO_MAINT_SRC:?}' file.
 You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
@@ -147,7 +115,7 @@ EOF
 repo-maint-list-all-functions () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-list-all-functions
 #
@@ -158,14 +126,14 @@ EOF
 
         return 1
     }
-    cat  <<EOF
+    cat <<EOF
 
 These are the currently available repo-maint-* functions in the environment:
 
 EOF
 
     declare -f -p | 'grep' -e "^repo-maint-.*()" | sed -e "s/^\(\S*\)\s.*/\1/";
-    cat  <<EOF
+    cat <<EOF
 
 Remember that you can get a help message out of any of these functions by
 setting the environment variable REPO_MAINT_HELP prior to invoking the function,
@@ -184,7 +152,7 @@ EOF
 repo-maint-create-new-git-repo () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-create-new-git-repo
 #
@@ -211,7 +179,7 @@ EOF
         echo -e "\nERROR: 1st git commit\n\n" 1>&2;
         return 1
     };
-    git tag -F - "initial-empty-repo"  <<EOF || 
+    git tag -F - "initial-empty-repo" <<EOF || 
 tag 'initial-empty-repo'
 
 Use 'git checkout -b <new-branch-name> initial-empty-repo' when you wish
@@ -250,7 +218,7 @@ EOF
         echo -e "\nERROR: 2nd git commit\n\n" 1>&2;
         return 1
     };
-    git tag -F - "initial-repo-maintenance"  <<EOF || 
+    git tag -F - "initial-repo-maintenance" <<EOF || 
 tag 'initial-repo-maintenance'
 
 Initial repo maintenance contents in '${REPO_MAINT_SRC:?}'.
@@ -260,7 +228,7 @@ EOF
         echo -e "\nERROR: 2nd git tag\n\n" 1>&2;
         return 1
     };
-    cat  <<EOF || 
+    cat <<EOF || 
 
 Successfully created initial git repo.
 You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
@@ -283,7 +251,7 @@ EOF
 repo-maint-create-development-branch () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-create-development-branch <release-tag-to-branch-from>
 #
@@ -331,7 +299,7 @@ EOF
         echo -e "\nERROR: git checkout\n\n" 1>&2;
         return 1
     };
-    cat  <<EOF || 
+    cat <<EOF || 
 
 Successfully created 'development' branch.
 You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
@@ -350,7 +318,7 @@ EOF
 repo-maint-merge-development-branch () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-merge-development-branch <branch-head-to-merge-with>
 #
@@ -403,7 +371,7 @@ EOF
         echo -e "\nERROR: git merge\n\n" 1>&2;
         return 1
     };
-    cat  <<EOF || 
+    cat <<EOF || 
 
 Successfully merged from 'development' branch to '$(git rev-parse --abbrev-ref HEAD)' branch.
 You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
@@ -422,7 +390,7 @@ EOF
 repo-maint-delete-development-branch () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-delete-development-branch
 #
@@ -465,7 +433,7 @@ EOF
         echo -e "\nERROR: git branch\n\n" 1>&2;
         return 1
     };
-    cat  <<EOF || 
+    cat <<EOF || 
 
 Successfully deleted 'development' branch.
 You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
@@ -484,7 +452,7 @@ EOF
 repo-maint-create-commit-on-current-branch-head () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-create-commit-on-current-branch-head [--allow-dirty-index] \\
 #   < <commit-message-file>
@@ -582,7 +550,7 @@ EOF
         echo -e "\nERROR: git commit\n\n" 1>&2;
         return 1
     };
-    cat  <<EOF || 
+    cat <<EOF || 
 
 Successfully committed to '$(git rev-parse --abbrev-ref HEAD)' branch.
 You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
@@ -601,7 +569,7 @@ EOF
 repo-maint-create-release-tag-at-current-branch-head () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-create-release-tag-at-current-branch-head <release-era> \\
 #   < <tag-message-body-file>
@@ -740,7 +708,7 @@ EOF
         };
         INDEX=$((${INDEX:?} + 1));
     done;
-    ( cat  <<EOF
+    ( cat <<EOF
 Release tag '${BRANCH:?}_${1:?}_${SEQUENCE:?}'
 
 EOF
@@ -755,7 +723,7 @@ EOF
         echo -e "\nERROR: git tag\n\n" 1>&2;
         return 1
     };
-    cat  <<EOF || 
+    cat <<EOF || 
 
 Successfully created new release tag.
 New release tag: '${BRANCH:?}_${1:?}_${SEQUENCE:?}'
@@ -788,7 +756,7 @@ EOF
 repo-maint-create-branch-from-master () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-create-branch-from-master <release-tag-to-branch-from>
 #
@@ -868,7 +836,7 @@ EOF
         echo -e "\nERROR: git checkout\n\n" 1>&2;
         return 1
     };
-    cat  <<EOF || 
+    cat <<EOF || 
 
 Successfully created 'branch-of_${1:?}' branch.
 You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
@@ -887,7 +855,7 @@ EOF
 repo-maint-create-sub-release-branch () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-create-sub-release-branch \\
 #   <release-tag-to-branch-from> <branch-prefix> < <file-list>
@@ -990,7 +958,7 @@ EOF
             return 1
         };
     done;
-    cat  <<EOF || 
+    cat <<EOF || 
 
 Successfully created 'branch-for_${2:?}_${BRANCH_SUFFIX:?}' branch.
 You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
@@ -1009,35 +977,35 @@ EOF
 repo-maint-calculate-current-release-era-string () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-calculate-current-release-era-string
 #
-#	This function calculates the current release era string and prints it
-#	out STDOUT.
+#       This function calculates the current release era string and prints it
+#       out STDOUT.
 #
-#	This function requires user maintenance to create a suitable algorithm
-#	for determining the release era of the project.  A release era may be
-#	determined by a set of development tools and their release version, or
-#	the version of some fundamental dependency that the project has, or any
-#	arbitrary scheme that makes sense for the project.
+#       This function requires user maintenance to create a suitable algorithm
+#       for determining the release era of the project.  A release era may be
+#       determined by a set of development tools and their release version, or
+#       the version of some fundamental dependency that the project has, or any
+#       arbitrary scheme that makes sense for the project.
 #
-#	NOTE: a valid release era string must contain only ([:alnum:]|-)
-#	      characters.
+#       NOTE: a valid release era string must contain only ([:alnum:]|-)
+#             characters.
 #
-#	NOTE: sequential release eras must be lexicographic sortable, such that
-#	      the release era that you have today should sort before the release
-#	      era that you define tomorrow.
+#       NOTE: sequential release eras must be lexicographic sortable, such that
+#             the release era that you have today should sort before the release
+#             era that you define tomorrow.
 #
-#	NOTE: dump the current version of this function with this command:
-#	      declare -f -p repo-maint-calculate-current-release-era-string
+#       NOTE: dump the current version of this function with this command:
+#             declare -f -p repo-maint-calculate-current-release-era-string
 #
-#	NOTE: remove the current version of this function with this command:
-#	      unset -f repo-maint-calculate-current-release-era-string
+#       NOTE: remove the current version of this function with this command:
+#             unset -f repo-maint-calculate-current-release-era-string
 #
-#	NOTE: write the current version of this function into the repo
-#	      maintenance script with this command:
-#	      repo-maint-update-repo-maintenance-script
+#       NOTE: write the current version of this function into the repo
+#             maintenance script with this command:
+#             repo-maint-update-repo-maintenance-script
 #-------------------------------------------------------------------------------
 EOF
 
@@ -1048,9 +1016,11 @@ EOF
     'grep' -q "Version 15.1.2 Build 193" <<< $(echo "${QUARTUS_VERSION}") > /dev/null 2>&1 && { 
         ERA="ACDS-15-1-2-b193"
     };
-    QUARTUS_VERSION="$(quartus_sh --version | 'grep' "Version")";
     'grep' -q "Version 16.0.0 Build 211" <<< $(echo "${QUARTUS_VERSION}") > /dev/null 2>&1 && { 
         ERA="ACDS-16-0-0-b211"
+    };
+    'grep' -q "Version 21.1.0 Build 842" <<< $(echo "${QUARTUS_VERSION}") > /dev/null 2>&1 && { 
+        ERA="ACDS-STD-21-1-0-b842"
     };
     echo ${ERA};
     return 0
@@ -1062,7 +1032,7 @@ EOF
 repo-maint-validate-release-era-string () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-validate-release-era-string <release-era>
 #
@@ -1109,6 +1079,7 @@ EOF
     done <<< "$(cat <<EOF
 ACDS-15-1-2-b193
 ACDS-16-0-0-b211
+ACDS-STD-21-1-0-b842
 EOF
 )";
     echo -e "\nERROR: invalid release era" 1>&2;
@@ -1122,7 +1093,7 @@ EOF
 repo-maint-validate-sub-release-branch-prefix () 
 { 
     [ -n "${REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # repo-maint-validate-sub-release-branch-prefix <sub-release-branch-prefix>
 #

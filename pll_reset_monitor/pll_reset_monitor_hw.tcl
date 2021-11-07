@@ -1,30 +1,14 @@
 #
-# Copyright (c) 2016 Intel Corporation
+# Copyright (c) 2016-2021 Intel Corporation
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to
-# deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-# IN THE SOFTWARE.
+# SPDX-License-Identifier: MIT-0
 #
 package require -exact qsys 15.1
 
 
-# 
+#
 # module pll_reset_monitor
-# 
+#
 set_module_property DESCRIPTION "Reset and monitor PLL."
 set_module_property NAME pll_reset_monitor
 set_module_property VERSION 1.0
@@ -42,9 +26,9 @@ set_module_property ELABORATION_CALLBACK elaborate
 set_module_property VALIDATION_CALLBACK validate
 
 
-# 
+#
 # file sets
-# 
+#
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL pll_reset_monitor
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
@@ -65,9 +49,9 @@ set_fileset_property SIM_VHDL ENABLE_FILE_OVERWRITE_MODE true
 add_fileset_file pll_reset_monitor.v VERILOG PATH pll_reset_monitor.v
 
 
-# 
+#
 # parameters
-# 
+#
 add_parameter RESET_COUNTER_WIDTH INTEGER
 set_parameter_property RESET_COUNTER_WIDTH DEFAULT_VALUE 10
 set_parameter_property RESET_COUNTER_WIDTH DISPLAY_NAME "Reset Counter Width"
@@ -252,14 +236,14 @@ set_parameter_property LOCK_FAILURE_CONDUIT_ROLE AFFECTS_VALIDATION true
 set_parameter_property LOCK_FAILURE_CONDUIT_ROLE AFFECTS_ELABORATION true
 
 
-# 
+#
 # display items
-# 
+#
 
 
-# 
+#
 # connection point pll_ref_clk
-# 
+#
 add_interface pll_ref_clk clock end
 set_interface_property pll_ref_clk clockRate 0
 set_interface_property pll_ref_clk ENABLED true
@@ -270,9 +254,9 @@ set_interface_property pll_ref_clk SVD_ADDRESS_GROUP ""
 
 add_interface_port pll_ref_clk pll_ref_clk clk Input 1
 
-# 
+#
 # connection point pll_reset_request
-# 
+#
 add_interface pll_reset_request reset end
 set_interface_property pll_reset_request associatedClock ""
 set_interface_property pll_reset_request synchronousEdges NONE
@@ -285,9 +269,9 @@ set_interface_property pll_reset_request SVD_ADDRESS_GROUP ""
 add_interface_port pll_reset_request pll_reset_request reset Input 1
 
 
-# 
+#
 # connection point pll_locked
-# 
+#
 add_interface pll_locked conduit end
 set_interface_property pll_locked associatedClock ""
 set_interface_property pll_locked associatedReset ""
@@ -300,9 +284,9 @@ set_interface_property pll_locked SVD_ADDRESS_GROUP ""
 add_interface_port pll_locked pll_locked pll_locked Input 1
 
 
-# 
+#
 # connection point s0_clk
-# 
+#
 add_interface s0_clk clock end
 set_interface_property s0_clk clockRate 0
 set_interface_property s0_clk ENABLED true
@@ -314,9 +298,9 @@ set_interface_property s0_clk SVD_ADDRESS_GROUP ""
 add_interface_port s0_clk s0_clk clk Input 1
 
 
-# 
+#
 # connection point s0_reset
-# 
+#
 add_interface s0_reset reset end
 set_interface_property s0_reset associatedClock s0_clk
 set_interface_property s0_reset synchronousEdges DEASSERT
@@ -329,9 +313,9 @@ set_interface_property s0_reset SVD_ADDRESS_GROUP ""
 add_interface_port s0_reset s0_reset reset Input 1
 
 
-# 
+#
 # connection point s0
-# 
+#
 add_interface s0 avalon end
 set_interface_property s0 addressUnits WORDS
 set_interface_property s0 associatedClock s0_clk
@@ -363,9 +347,9 @@ set_interface_assignment s0 embeddedsw.configuration.isNonVolatileStorage 0
 set_interface_assignment s0 embeddedsw.configuration.isPrintableDevice 0
 
 
-# 
+#
 # connection point pll_reset
-# 
+#
 add_interface pll_reset reset start
 set_interface_property pll_reset associatedClock pll_ref_clk
 set_interface_property pll_reset associatedDirectReset ""
@@ -380,9 +364,9 @@ set_interface_property pll_reset SVD_ADDRESS_GROUP ""
 add_interface_port pll_reset pll_reset reset Output 1
 
 
-# 
+#
 # connection point lock_success
-# 
+#
 add_interface lock_success conduit end
 set_interface_property lock_success associatedClock ""
 set_interface_property lock_success associatedReset ""
@@ -395,9 +379,9 @@ set_interface_property lock_success SVD_ADDRESS_GROUP ""
 add_interface_port lock_success lock_success lock_success Output 1
 
 
-# 
+#
 # connection point lock_success_reset
-# 
+#
 add_interface lock_success_reset reset start
 set_interface_property lock_success_reset associatedClock ""
 set_interface_property lock_success_reset associatedDirectReset ""
@@ -412,9 +396,9 @@ set_interface_property lock_success_reset SVD_ADDRESS_GROUP ""
 add_interface_port lock_success_reset lock_success_reset reset Output 1
 
 
-# 
+#
 # connection point lock_failure
-# 
+#
 add_interface lock_failure conduit end
 set_interface_property lock_failure associatedClock ""
 set_interface_property lock_failure associatedReset ""
@@ -427,9 +411,9 @@ set_interface_property lock_failure SVD_ADDRESS_GROUP ""
 add_interface_port lock_failure lock_failure lock_failure Output 1
 
 
-# 
+#
 # connection point lock_failure_reset
-# 
+#
 add_interface lock_failure_reset reset start
 set_interface_property lock_failure_reset associatedClock ""
 set_interface_property lock_failure_reset associatedDirectReset ""
