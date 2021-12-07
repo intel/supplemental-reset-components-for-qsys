@@ -8,8 +8,8 @@
 `define VERBOSITY VERBOSITY_INFO
 
 `define TEST_SYS_INST	sim_top.tb.test_sys_inst
-`define POR_INST 	sim_top.tb.test_sys_inst.por
-`define STD_SYNC_INST	sim_top.tb.test_sys_inst.por.power_on_reset_std_sync_inst
+`define POR_INST 	sim_top.tb.test_sys_inst.por.por
+`define STD_SYNC_INST	sim_top.tb.test_sys_inst.por.por.power_on_reset_std_sync_inst
 
 module sim_driver();
 

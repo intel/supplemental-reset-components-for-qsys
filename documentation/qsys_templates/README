@@ -1,6 +1,0 @@
-This directory contains Qsys system templates that are used to capture screen
-shots of the example systems used in the PDF documentation.
-
-You can create all of the example Qsys systems by running the
-./create_systems.sh script.
-

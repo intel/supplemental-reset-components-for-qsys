@@ -8,9 +8,9 @@
 `define VERBOSITY VERBOSITY_INFO
 
 `define TEST_SYS_INST		sim_top.tb.test_sys_inst
-`define POWER_ON_RESET_BFM	sim_top.tb.test_sys_inst_reset_event_counter_0_power_on_reset_bfm
-`define RESET_EVENT_BFM		sim_top.tb.test_sys_inst_reset_event_counter_0_reset_event_bfm
-`define SLAVE_S0_BFM		sim_top.tb.test_sys_inst_reset_event_counter_0_s0_bfm
+`define POWER_ON_RESET_BFM	sim_top.tb.test_sys_inst_reset_event_counter_0_power_on_reset_bfm.test_sys_inst_reset_event_counter_0_power_on_reset_bfm
+`define RESET_EVENT_BFM		sim_top.tb.test_sys_inst_reset_event_counter_0_reset_event_bfm.test_sys_inst_reset_event_counter_0_reset_event_bfm
+`define SLAVE_S0_BFM		sim_top.tb.test_sys_inst_reset_event_counter_0_s0_bfm.test_sys_inst_reset_event_counter_0_s0_bfm
 
 module sim_driver();
 

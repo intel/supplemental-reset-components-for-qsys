@@ -7,7 +7,7 @@
 # Set the hierarchy variables used in Qsys-generated msim_setup.tcl
 set TOP_LEVEL_NAME "sim_top"
 set SYSTEM_INSTANCE_NAME "tb"
-set QSYS_SIMDIR "../test_sys/testbench/"
+set QSYS_SIMDIR "../test_sys_tb/test_sys_tb/sim/"
 
 # Send the transcript to a timestamped file.
 set my_TS [ clock format [ clock seconds ] -format %Y%m%d_%H%M%S ]

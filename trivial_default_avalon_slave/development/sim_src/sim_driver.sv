@@ -8,15 +8,15 @@
 `define VERBOSITY VERBOSITY_INFO
 
 `define TEST_SYS_INST		sim_top.tb.test_sys_inst
-`define RESET_BFM		sim_top.tb.test_sys_inst_reset_bfm
-`define TDAS_0_BFM		sim_top.tb.test_sys_inst_tdas_0_none_slave_bfm
-`define TDAS_1_BFM		sim_top.tb.test_sys_inst_tdas_1_slave_response_slave_bfm
-`define TDAS_2_BFM		sim_top.tb.test_sys_inst_tdas_2_never_respond_slave_bfm
-`define TDAS_3_BFM		sim_top.tb.test_sys_inst_tdas_3_access_events_slave_bfm
-`define TDAS_3_CE_CONDUIT_BFM	sim_top.tb.test_sys_inst_tdas_3_access_events_clear_event_bfm
-`define TDAS_4_BFM		sim_top.tb.test_sys_inst_tdas_4_32_bit_wide_slave_bfm
-`define TDAS_5_BFM		sim_top.tb.test_sys_inst_tdas_5_never_respond_access_event_slave_bfm
-`define TDAS_5_CE_CONDUIT_BFM	sim_top.tb.test_sys_inst_tdas_5_never_respond_access_event_clear_event_bfm
+`define RESET_BFM		sim_top.tb.test_sys_inst_reset_bfm.test_sys_inst_reset_bfm
+`define TDAS_0_BFM		sim_top.tb.test_sys_inst_tdas_0_none_slave_bfm.test_sys_inst_tdas_0_none_slave_bfm
+`define TDAS_1_BFM		sim_top.tb.test_sys_inst_tdas_1_slave_response_slave_bfm.test_sys_inst_tdas_1_slave_response_slave_bfm
+`define TDAS_2_BFM		sim_top.tb.test_sys_inst_tdas_2_never_respond_slave_bfm.test_sys_inst_tdas_2_never_respond_slave_bfm
+`define TDAS_3_BFM		sim_top.tb.test_sys_inst_tdas_3_access_events_slave_bfm.test_sys_inst_tdas_3_access_events_slave_bfm
+`define TDAS_3_CE_CONDUIT_BFM	sim_top.tb.test_sys_inst_tdas_3_access_events_clear_event_bfm.test_sys_inst_tdas_3_access_events_clear_event_bfm
+`define TDAS_4_BFM		sim_top.tb.test_sys_inst_tdas_4_32_bit_wide_slave_bfm.test_sys_inst_tdas_4_32_bit_wide_slave_bfm
+`define TDAS_5_BFM		sim_top.tb.test_sys_inst_tdas_5_never_respond_access_event_slave_bfm.test_sys_inst_tdas_5_never_respond_access_event_slave_bfm
+`define TDAS_5_CE_CONDUIT_BFM	sim_top.tb.test_sys_inst_tdas_5_never_respond_access_event_clear_event_bfm.test_sys_inst_tdas_5_never_respond_access_event_clear_event_bfm
 module sim_driver();
 
 import verbosity_pkg::*;
@@ -123,7 +123,7 @@ initial begin
 
 	`TDAS_0_BFM.pop_response();
 
-	expected_time = 'd1_290_000;
+	expected_time = 'd1_270_000;
 	cur_time = $time;
 	if(expected_time == cur_time) begin
 	        $sformat(message, "Response received at expected time: %d : %d", cur_time, expected_time);
@@ -186,22 +186,22 @@ initial begin
 		`TDAS_0_BFM.pop_response();
 
 		case(i)
-			 0 : expected_time = 'd1_370_000;
-			 1 : expected_time = 'd1_450_000;
-			 2 : expected_time = 'd1_530_000;
-			 3 : expected_time = 'd1_610_000;
-			 4 : expected_time = 'd1_670_000;
-			 5 : expected_time = 'd1_710_000;
-			 6 : expected_time = 'd1_750_000;
-			 7 : expected_time = 'd1_790_000;
-		 	 8 : expected_time = 'd1_850_000;
-			 9 : expected_time = 'd1_910_000;
-			10 : expected_time = 'd1_970_000;
-			11 : expected_time = 'd2_030_000;
-			12 : expected_time = 'd2_090_000;
-			13 : expected_time = 'd2_150_000;
-			14 : expected_time = 'd2_210_000;
-			15 : expected_time = 'd2_270_000;
+			 0 : expected_time = 'd1_350_000;
+			 1 : expected_time = 'd1_390_000;
+			 2 : expected_time = 'd1_430_000;
+			 3 : expected_time = 'd1_470_000;
+			 4 : expected_time = 'd1_490_000;
+			 5 : expected_time = 'd1_530_000;
+			 6 : expected_time = 'd1_570_000;
+			 7 : expected_time = 'd1_610_000;
+		 	 8 : expected_time = 'd1_670_000;
+			 9 : expected_time = 'd1_690_000;
+			10 : expected_time = 'd1_750_000;
+			11 : expected_time = 'd1_770_000;
+			12 : expected_time = 'd1_830_000;
+			13 : expected_time = 'd1_850_000;
+			14 : expected_time = 'd1_910_000;
+			15 : expected_time = 'd1_930_000;
 			default : expected_time = 'd0;
 		endcase
 
@@ -256,7 +256,7 @@ initial begin
 		test_success <= 1'b0;
 	end
 
-	expected_time = 'd2_350_000;
+	expected_time = 'd1_990_000;
 	cur_time = $time;
 	if(expected_time == cur_time) begin
 	        $sformat(message, "Response received at expected time: %d : %d", cur_time, expected_time);
@@ -295,7 +295,7 @@ initial begin
 		test_success <= 1'b0;
 	end
 
-	expected_time = 'd2_430_000;
+	expected_time = 'd2_050_000;
 	cur_time = $time;
 	if(expected_time == cur_time) begin
 	        $sformat(message, "Response received at expected time: %d : %d", cur_time, expected_time);
@@ -358,22 +358,22 @@ initial begin
 		`TDAS_1_BFM.pop_response();
 
 		case(i)
-			 0 : expected_time = 'd2_510_000;
-			 1 : expected_time = 'd2_590_000;
-			 2 : expected_time = 'd2_670_000;
-			 3 : expected_time = 'd2_750_000;
-			 4 : expected_time = 'd2_830_000;
-			 5 : expected_time = 'd2_910_000;
-			 6 : expected_time = 'd2_990_000;
-			 7 : expected_time = 'd3_070_000;
-		 	 8 : expected_time = 'd3_150_000;
-			 9 : expected_time = 'd3_230_000;
-			10 : expected_time = 'd3_310_000;
-			11 : expected_time = 'd3_390_000;
-			12 : expected_time = 'd3_470_000;
-			13 : expected_time = 'd3_550_000;
-			14 : expected_time = 'd3_630_000;
-			15 : expected_time = 'd3_710_000;
+			 0 : expected_time = 'd2_130_000;
+			 1 : expected_time = 'd2_170_000;
+			 2 : expected_time = 'd2_210_000;
+			 3 : expected_time = 'd2_250_000;
+			 4 : expected_time = 'd2_290_000;
+			 5 : expected_time = 'd2_370_000;
+			 6 : expected_time = 'd2_450_000;
+			 7 : expected_time = 'd2_530_000;
+		 	 8 : expected_time = 'd2_610_000;
+			 9 : expected_time = 'd2_650_000;
+			10 : expected_time = 'd2_730_000;
+			11 : expected_time = 'd2_770_000;
+			12 : expected_time = 'd2_850_000;
+			13 : expected_time = 'd2_890_000;
+			14 : expected_time = 'd2_970_000;
+			15 : expected_time = 'd3_010_000;
 			default : expected_time = 'd0;
 		endcase
 
@@ -613,7 +613,7 @@ initial begin
 		test_success <= 1'b0;
 	end
 
-	expected_time = 'd4_510_000;
+	expected_time = 'd3_790_000;
 	cur_time = $time;
 	if(expected_time == cur_time) begin
 	        $sformat(message, "Response received at expected time: %d : %d", cur_time, expected_time);
@@ -640,7 +640,7 @@ initial begin
 
 	`TDAS_4_BFM.pop_response();
 
-	expected_time = 'd4_570_000;
+	expected_time = 'd3_830_000;
 	cur_time = $time;
 	if(expected_time == cur_time) begin
 	        $sformat(message, "Response received at expected time: %d : %d", cur_time, expected_time);

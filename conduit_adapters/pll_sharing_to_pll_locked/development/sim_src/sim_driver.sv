@@ -8,8 +8,8 @@
 `define VERBOSITY VERBOSITY_INFO
 
 `define TEST_SYS_INST		sim_top.tb.test_sys_inst
-`define PLL_LOCKED_CONDUIT_BFM	sim_top.tb.test_sys_inst_pll_sharing_to_pll_locked_0_pll_locked_bfm
-`define SHARING_CONDUIT_BFM	sim_top.tb.test_sys_inst_pll_sharing_to_pll_locked_0_pll_sharing_bfm
+`define PLL_LOCKED_CONDUIT_BFM	sim_top.tb.test_sys_inst_pll_sharing_to_pll_locked_0_pll_locked_bfm.test_sys_inst_pll_sharing_to_pll_locked_0_pll_locked_bfm
+`define SHARING_CONDUIT_BFM	sim_top.tb.test_sys_inst_pll_sharing_to_pll_locked_0_pll_sharing_bfm.test_sys_inst_pll_sharing_to_pll_locked_0_pll_sharing_bfm
 
 module sim_driver();
 

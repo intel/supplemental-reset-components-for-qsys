@@ -7,8 +7,8 @@ package require -exact qsys 14.0
 
 create_system {test_sys}
 
-set_project_property {DEVICE_FAMILY} {CYCLONEV}
-set_project_property {DEVICE} {5CGXFC5C6F27C7}
+set_project_property {DEVICE_FAMILY} {Arria 10}
+set_project_property {DEVICE} {10AS066N3F40E2SG}
 
 proc create_qsys_system {} {
 

@@ -8,12 +8,12 @@
 `define VERBOSITY VERBOSITY_INFO
 
 `define TEST_SYS_INST		sim_top.tb.test_sys_inst
-`define LOCK_FAIURE_BFM		sim_top.tb.test_sys_inst_prm_lock_failure_bfm
-`define LOCK_SUCCESS_BFM	sim_top.tb.test_sys_inst_prm_lock_success_bfm
-`define PLL_LOCKED_BFM		sim_top.tb.test_sys_inst_prm_pll_locked_bfm
-`define PLL_RESET_REQUEST_BFM	sim_top.tb.test_sys_inst_prm_pll_reset_request_bfm
-`define SLAVE_S0_BFM		sim_top.tb.test_sys_inst_prm_s0_bfm
-`define SLAVE_S0_RESET_BFM	sim_top.tb.test_sys_inst_prm_s0_reset_bfm
+`define LOCK_FAIURE_BFM		sim_top.tb.test_sys_inst_prm_lock_failure_bfm.test_sys_inst_prm_lock_failure_bfm
+`define LOCK_SUCCESS_BFM	sim_top.tb.test_sys_inst_prm_lock_success_bfm.test_sys_inst_prm_lock_success_bfm
+`define PLL_LOCKED_BFM		sim_top.tb.test_sys_inst_prm_pll_locked_bfm.test_sys_inst_prm_pll_locked_bfm
+`define PLL_RESET_REQUEST_BFM	sim_top.tb.test_sys_inst_prm_pll_reset_request_bfm.test_sys_inst_prm_pll_reset_request_bfm
+`define SLAVE_S0_BFM		sim_top.tb.test_sys_inst_prm_s0_bfm.test_sys_inst_prm_s0_bfm
+`define SLAVE_S0_RESET_BFM	sim_top.tb.test_sys_inst_prm_s0_reset_bfm.test_sys_inst_prm_s0_reset_bfm
 
 module sim_driver();
 

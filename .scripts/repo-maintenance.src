@@ -1022,6 +1022,9 @@ EOF
     'grep' -q "Version 21.1.0 Build 842" <<< $(echo "${QUARTUS_VERSION}") > /dev/null 2>&1 && { 
         ERA="ACDS-STD-21-1-0-b842"
     };
+    'grep' -q "Version 21.3.0 Build 170" <<< $(echo "${QUARTUS_VERSION}") > /dev/null 2>&1 && { 
+        ERA="ACDS-PRO-21-3-0-b170"
+    };
     echo ${ERA};
     return 0
 }
@@ -1080,6 +1083,7 @@ EOF
 ACDS-15-1-2-b193
 ACDS-16-0-0-b211
 ACDS-STD-21-1-0-b842
+ACDS-PRO-21-3-0-b170
 EOF
 )";
     echo -e "\nERROR: invalid release era" 1>&2;

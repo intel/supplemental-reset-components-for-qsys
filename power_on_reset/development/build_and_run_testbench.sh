@@ -65,7 +65,7 @@ cat << EOF
 This version of this example was tested with this version of the Intel tools:
 
 Quartus Prime Shell
-Version 21.1.0 Build 842 10/21/2021 SJ Standard Edition
+Version 21.3.0 Build 170 09/23/2021 SC Pro Edition
 Copyright (C) 2021  Intel Corporation. All rights reserved.
 
 If your tools are not from this version you may experience build issues related
@@ -111,6 +111,7 @@ set -x
 }
 qsys-script \
 	--script="scripts/create_test_sys_qsys.tcl" \
+	--new-quartus-project=test_proj \
 	> "${BUILD_LOGS:?}"/02_create_test_sys_qsys_log.txt 2>&1 \
 	|| { set +x ; echo "ERROR: see logs" ; exit 1 ; }
 set +x
@@ -120,9 +121,10 @@ set +x
 set -x
 qsys-generate \
 	test_sys.qsys \
+	--quartus-project=test_proj \
 	--testbench=STANDARD \
 	--testbench-simulation=VERILOG \
-	--part=5CGXFC5C6F27C7 \
+	--part=10AS066N3F40E2SG \
 	> "${BUILD_LOGS:?}"/03_qsys-generate_log.txt 2>&1 \
 	|| { set +x ; echo "ERROR: see logs" ; exit 1 ; }
 set +x

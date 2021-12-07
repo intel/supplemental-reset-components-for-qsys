@@ -8,7 +8,7 @@
 `define VERBOSITY VERBOSITY_INFO
 
 `define TEST_SYS_INST		sim_top.tb.test_sys_inst
-`define STATUS_CONDUIT_BFM	sim_top.tb.test_sys_inst_emif_status_breakout_0_status_bfm
+`define STATUS_CONDUIT_BFM	sim_top.tb.test_sys_inst_emif_status_breakout_0_status_bfm.test_sys_inst_emif_status_breakout_0_status_bfm
 
 module sim_driver();
 

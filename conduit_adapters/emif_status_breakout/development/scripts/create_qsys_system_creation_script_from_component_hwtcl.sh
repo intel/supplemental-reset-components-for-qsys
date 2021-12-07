@@ -36,12 +36,12 @@ SYSTEM_NAME="test_sys"
 #
 # This is the device family that your Qsys system will run in.
 #
-THE_DEVICE_FAMILY="CYCLONEV"
+THE_DEVICE_FAMILY="Arria 10"
 
 #
 # This is the device that your Qsys system will run in.
 #
-THE_DEVICE="5CGXFC5C6F27C7"
+THE_DEVICE="10AS066N3F40E2SG"
 
 #------------------------------------------------------------------------------
 

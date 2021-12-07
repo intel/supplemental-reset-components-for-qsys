@@ -10,8 +10,8 @@
 `define VERBOSITY VERBOSITY_INFO
 
 `define TEST_SYS_INST		sim_top.tb.test_sys_inst
-`define POWER_ON_RESET_BFM	sim_top.tb.test_sys_inst_reset_assertion_delay_0_power_on_reset_bfm
-`define RESET_INPUT_BFM		sim_top.tb.test_sys_inst_reset_assertion_delay_0_reset_input_bfm
+`define POWER_ON_RESET_BFM	sim_top.tb.test_sys_inst_reset_assertion_delay_0_power_on_reset_bfm.test_sys_inst_reset_assertion_delay_0_power_on_reset_bfm
+`define RESET_INPUT_BFM		sim_top.tb.test_sys_inst_reset_assertion_delay_0_reset_input_bfm.test_sys_inst_reset_assertion_delay_0_reset_input_bfm
 
 module sim_driver();
 

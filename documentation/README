@@ -11,6 +11,6 @@ build_documentation.sh
 	project.
 
 qsys_templates/
-	This directory contains the Qsys system templates that were used for the
-	example system screen shots used in the PDF documentation for this
-	project.
+	This directory was removed because it contains IP references that
+	require the Standard tools environment and this branch of the repo is
+	only supported by the Pro tools environment.

@@ -8,8 +8,8 @@
 `define VERBOSITY VERBOSITY_INFO
 
 `define TEST_SYS_INST		sim_top.tb.test_sys_inst
-`define ASSERT_RESET_BFM	sim_top.tb.test_sys_inst_rua_reset_assert_bfm
-`define RELEASE_RESET_BFM	sim_top.tb.test_sys_inst_rua_reset_release_bfm
+`define ASSERT_RESET_BFM	sim_top.tb.test_sys_inst_rua_reset_assert_bfm.test_sys_inst_rua_reset_assert_bfm
+`define RELEASE_RESET_BFM	sim_top.tb.test_sys_inst_rua_reset_release_bfm.test_sys_inst_rua_reset_release_bfm
 `define ASSERT_RESET_SIGNAL	`TEST_SYS_INST.rua_reset_assert_reset
 `define RELEASE_RESET_SIGNAL	`TEST_SYS_INST.rua_reset_release_reset
 `define RESET_OUT_SIGNAL	`TEST_SYS_INST.rua_reset_out_reset

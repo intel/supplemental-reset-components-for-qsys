@@ -8,13 +8,13 @@
 `define VERBOSITY VERBOSITY_INFO
 
 `define TEST_SYS_INST		sim_top.tb.test_sys_inst
-`define EVENT_INPUT_BFM		sim_top.tb.test_sys_inst_event_timer_0_event_input_bfm
-`define EVENT_RESET_BFM		sim_top.tb.test_sys_inst_event_timer_0_event_reset_bfm
-`define S0_BFM			sim_top.tb.test_sys_inst_event_timer_0_s0_bfm
-`define S0_RESET_BFM		sim_top.tb.test_sys_inst_event_timer_0_s0_reset_bfm
-`define TIMEOUT_BFM		sim_top.tb.test_sys_inst_event_timer_0_timeout_bfm
-`define ACQUIRED_BFM		sim_top.tb.test_sys_inst_event_timer_0_acquired_bfm
-`define LOST_BFM		sim_top.tb.test_sys_inst_event_timer_0_lost_bfm
+`define EVENT_INPUT_BFM		sim_top.tb.test_sys_inst_event_timer_0_event_input_bfm.test_sys_inst_event_timer_0_event_input_bfm
+`define EVENT_RESET_BFM		sim_top.tb.test_sys_inst_event_timer_0_event_reset_bfm.test_sys_inst_event_timer_0_event_reset_bfm
+`define S0_BFM			sim_top.tb.test_sys_inst_event_timer_0_s0_bfm.test_sys_inst_event_timer_0_s0_bfm
+`define S0_RESET_BFM		sim_top.tb.test_sys_inst_event_timer_0_s0_reset_bfm.test_sys_inst_event_timer_0_s0_reset_bfm
+`define TIMEOUT_BFM		sim_top.tb.test_sys_inst_event_timer_0_timeout_bfm.test_sys_inst_event_timer_0_timeout_bfm
+`define ACQUIRED_BFM		sim_top.tb.test_sys_inst_event_timer_0_acquired_bfm.test_sys_inst_event_timer_0_acquired_bfm
+`define LOST_BFM		sim_top.tb.test_sys_inst_event_timer_0_lost_bfm.test_sys_inst_event_timer_0_lost_bfm
 
 module sim_driver();
 
