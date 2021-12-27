@@ -65,7 +65,7 @@ cat << EOF
 This version of this example was tested with this version of the Intel tools:
 
 Quartus Prime Shell
-Version 21.3.0 Build 170 09/23/2021 SC Pro Edition
+Version 21.4.0 Build 67 12/06/2021 SC Pro Edition
 Copyright (C) 2021  Intel Corporation. All rights reserved.
 
 If your tools are not from this version you may experience build issues related

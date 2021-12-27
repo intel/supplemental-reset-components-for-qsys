@@ -665,10 +665,9 @@ EOF
         LATEST_RELEASE_TAG_ON_THIS_BRANCH="$(git tag --list "${BRANCH:?}_*" | tail -n 1)";
         [ -n "${LATEST_RELEASE_TAG_ON_THIS_BRANCH}" ] && { 
             [ "${LATEST_RELEASE_TAG_ON_THIS_BRANCH:?}" \< "${BRANCH:?}_${1:?}_${SEQUENCE:?}" ] || { 
-                echo -e "\nERROR: there appears to be a later release era tag on branch 'master' already" 1>&2;
+                echo -e "\nWARNING: there appears to be a later release era tag on branch 'master' already" 1>&2;
                 echo -e "  This tag: '${BRANCH:?}_${1:?}_${SEQUENCE:?}'" 1>&2;
-                echo -e "Latest tag: '${LATEST_RELEASE_TAG_ON_THIS_BRANCH:?}'\n\n" 1>&2;
-                return 1
+                echo -e "Latest tag: '${LATEST_RELEASE_TAG_ON_THIS_BRANCH:?}'\n\n" 1>&2
             }
         };
         true
@@ -1025,6 +1024,9 @@ EOF
     'grep' -q "Version 21.3.0 Build 170" <<< $(echo "${QUARTUS_VERSION}") > /dev/null 2>&1 && { 
         ERA="ACDS-PRO-21-3-0-b170"
     };
+    'grep' -q "Version 21.4.0 Build 67" <<< $(echo "${QUARTUS_VERSION}") > /dev/null 2>&1 && { 
+        ERA="ACDS-PRO-21-4-0-b67"
+    };
     echo ${ERA};
     return 0
 }
@@ -1084,6 +1086,7 @@ ACDS-15-1-2-b193
 ACDS-16-0-0-b211
 ACDS-STD-21-1-0-b842
 ACDS-PRO-21-3-0-b170
+ACDS-PRO-21-4-0-b67
 EOF
 )";
     echo -e "\nERROR: invalid release era" 1>&2;

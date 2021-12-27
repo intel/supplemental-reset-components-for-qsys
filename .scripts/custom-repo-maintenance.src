@@ -21,7 +21,7 @@ echo -e "\nUse 'custom-repo-maint-list-all-functions' to view all functions inst
 custom-repo-maint-update-custom-repo-maintenance-script () 
 { 
     [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # custom-repo-maint-update-custom-repo-maintenance-script
 #
@@ -51,7 +51,7 @@ EOF
     };
     CUSTOM_REPO_MAINT_SRC=".scripts/custom-repo-maintenance.src";
     mkdir -p "$(dirname "${CUSTOM_REPO_MAINT_SRC:?}")";
-    cat > "${CUSTOM_REPO_MAINT_SRC:?}"  <<EOF
+    cat > "${CUSTOM_REPO_MAINT_SRC:?}" <<EOF
 #
 # Copyright (c) 2016-2021 Intel Corporation
 #
@@ -72,7 +72,7 @@ EOF
 
     while read -r NEXT_FUNCTION; do
         [ -n "${NEXT_FUNCTION}" ] && { 
-            cat >> "${CUSTOM_REPO_MAINT_SRC:?}"  <<EOF
+            cat >> "${CUSTOM_REPO_MAINT_SRC:?}" <<EOF
 
 #-------------------------------------------------------------------------------
 # ${NEXT_FUNCTION}
@@ -93,7 +93,7 @@ custom-repo-maint-pre-push-checklist
 custom-repo-maint-calculate-next-release-tag-name
 EOF
 )";
-    cat  <<EOF || 
+    cat <<EOF || 
 
 Successfully updated '${CUSTOM_REPO_MAINT_SRC:?}' file.
 You are on branch: '$(git rev-parse --abbrev-ref HEAD)'
@@ -112,7 +112,7 @@ EOF
 custom-repo-maint-list-all-functions () 
 { 
     [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # custom-repo-maint-list-all-functions
 #
@@ -123,7 +123,7 @@ EOF
 
         return 1
     }
-    cat  <<EOF
+    cat <<EOF
 
 These are the currently available custom-repo-maint-* functions in the
 environment:
@@ -131,7 +131,7 @@ environment:
 EOF
 
     declare -f -p | 'grep' -e "^custom-repo-maint-.*()" | sed -e "s/^\(\S*\)\s.*/\1/";
-    cat  <<EOF
+    cat <<EOF
 
 Remember that you can get a help message out of any of these functions by
 setting the environment variable CUSTOM_REPO_MAINT_HELP prior to invoking the
@@ -150,7 +150,7 @@ EOF
 custom-repo-maint-howto-release () 
 { 
     [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # custom-repo-maint-howto-release
 #
@@ -162,7 +162,7 @@ EOF
 
         return 1
     }
-    cat  <<EOF
+    cat <<EOF
 
 HOWTO release
 
@@ -299,7 +299,7 @@ EOF
 custom-repo-maint-release-tag-boilerplate () 
 { 
     [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # custom-repo-maint-release-tag-boilerplate
 #
@@ -311,7 +311,7 @@ EOF
 
         return 1
     }
-    cat  <<EOF
+    cat <<EOF
 # Lines that being with '#' are considered comments and do not get used in the
 # tag message.
 #
@@ -358,7 +358,7 @@ EOF
 custom-repo-maint-commit-message-boilerplate () 
 { 
     [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # custom-repo-maint-commit-message-boilerplate
 #
@@ -370,7 +370,7 @@ EOF
 
         return 1
     }
-    cat  <<EOF
+    cat <<EOF
 # Lines that being with '#' are considered comments and do not get used in the
 # commit message.
 #
@@ -425,7 +425,7 @@ EOF
 custom-repo-maint-pre-commit-checklist () 
 { 
     [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # custom-repo-maint-pre-commit-checklist
 #
@@ -444,7 +444,7 @@ EOF
         echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
         return 1
     };
-    cat  <<EOF
+    cat <<EOF
 
 Here is the current status of the index:
 
@@ -502,7 +502,7 @@ EOF
 custom-repo-maint-pre-tag-checklist () 
 { 
     [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # custom-repo-maint-pre-tag-checklist
 #
@@ -521,7 +521,7 @@ EOF
         echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
         return 1
     };
-    cat  <<EOF
+    cat <<EOF
 
 Here is the current status of the index:
 
@@ -559,7 +559,7 @@ EOF
 custom-repo-maint-pre-push-checklist () 
 { 
     [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # custom-repo-maint-pre-push-checklist
 #
@@ -578,7 +578,7 @@ EOF
         echo -e "\nERROR: current directory does not appear to be a git repo work tree\n\n" 1>&2;
         return 1
     };
-    cat  <<EOF
+    cat <<EOF
 
 These are the current branches in the repo:
 
@@ -614,7 +614,7 @@ EOF
 custom-repo-maint-calculate-next-release-tag-name () 
 { 
     [ -n "${CUSTOM_REPO_MAINT_HELP}" ] && { 
-        cat 1>&2  <<EOF
+        cat 1>&2 <<EOF
 #-------------------------------------------------------------------------------
 # custom-repo-maint-calculate-next-release-tag-name
 #

@@ -8,7 +8,13 @@ SPDX-License-Identifier: MIT-0
 	<path path="./conduit_adapters/*/*" >
 		<tag2 key="COMPONENT_IN_PROJECT" value="true" />
 	</path>
+	<path path="./default_subordinate/*" >
+		<tag2 key="COMPONENT_IN_PROJECT" value="true" />
+	</path>
 	<path path="./event_timer/*" >
+		<tag2 key="COMPONENT_IN_PROJECT" value="true" />
+	</path>
+	<path path="./niosv_reset_looper/*" >
 		<tag2 key="COMPONENT_IN_PROJECT" value="true" />
 	</path>
 	<path path="./pll_reset_monitor/*" >

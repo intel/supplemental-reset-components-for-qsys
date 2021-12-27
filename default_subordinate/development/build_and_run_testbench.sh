@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2016-2021 Intel Corporation
+# Copyright (c) 2021 Intel Corporation
 #
 # SPDX-License-Identifier: MIT-0
 #
@@ -46,6 +46,9 @@ type \
 	qsys-script \
 	qsys-generate \
 	vsim \
+	cmake \
+	riscv-none-embed-gcc \
+	elf2hex \
 	> "${BUILD_LOGS:?}"/00_tool_check_log.txt 2>&1 \
 	|| {
 		set +x
@@ -130,11 +133,34 @@ qsys-generate \
 set +x
 ;;&
 
-04|run_sim_test|all)
+04|build_software|all)
+set -x
+./software/test_sw_bsp/create_bsp.sh \
+	> "${BUILD_LOGS:?}"/04_build_software_log.txt 2>&1 \
+	|| { set +x ; echo "ERROR: see logs" ; exit 1 ; }
+./software/test_sw/create_app.sh \
+	>> "${BUILD_LOGS:?}"/04_build_software_log.txt 2>&1 \
+	|| { set +x ; echo "ERROR: see logs" ; exit 1 ; }
+pushd software/test_sw > /dev/null 2>&1
+cmake -B build -DCMAKE_BUILD_TYPE=Release \
+	>> "${BUILD_LOGS:?}"/04_build_software_log.txt 2>&1 \
+	|| { set +x ; echo "ERROR: see logs" ; exit 1 ; }
+cd build
+make VERBOSE=1 \
+	>> "${BUILD_LOGS:?}"/04_build_software_log.txt 2>&1 \
+	|| { set +x ; echo "ERROR: see logs" ; exit 1 ; }
+elf2hex --base 0x0000 --end 0x20000 --input test_sw.elf --output test_sw.elf.hex --record 4 --width 32 \
+	>> "${BUILD_LOGS:?}"/04_build_software_log.txt 2>&1 \
+	|| { set +x ; echo "ERROR: see logs" ; exit 1 ; }
+popd > /dev/null 2>&1
+set +x
+;;&
+
+05|run_sim_test|all)
 set -x
 pushd sim_src > /dev/null 2>&1
 ./run_sim_test.sh \
-	> "${BUILD_LOGS:?}"/04_run_sim_test_log.txt 2>&1 \
+	> "${BUILD_LOGS:?}"/05_run_sim_test_log.txt 2>&1 \
 	|| { set +x ; echo "ERROR: see logs" ; exit 1 ; }
 popd > /dev/null 2>&1
 set +x

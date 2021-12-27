@@ -68,6 +68,14 @@ RESET_UNTIL_ACK_PID="$!"
 	> "${BUILD_LOGS:?}"/trivial_default_avalon_slave_log.txt 2>&1 &
 TRIVIAL_DEFAULT_AVALON_SLAVE_PID="$!"
 
+../niosv_reset_looper/development/build_and_run_testbench.sh 01 02 03 \
+	> "${BUILD_LOGS:?}"/niosv_reset_looper_log.txt 2>&1 &
+NIOSV_RESET_LOOPER_PID="$!"
+
+../default_subordinate/development/build_and_run_testbench.sh 01 02 03 04 \
+	> "${BUILD_LOGS:?}"/default_subordinate_log.txt 2>&1 &
+DEFAULT_SUBORDINATE_PID="$!"
+
 wait ${CONDUIT_REMAP_PID} || { EXIT_VALUE=1; echo "ERROR:CONDUIT_REMAP";}
 wait ${EMIF_STATUS_BREAKOUT_PID} || { EXIT_VALUE=1; echo "ERROR:EMIF_STATUS_BREAKOUT";}
 wait ${PLL_SHARING_TO_PLL_LOCKED_PID} || { EXIT_VALUE=1; echo "ERROR:PLL_SHARING_TO_PLL_LOCKED";}
@@ -79,6 +87,8 @@ wait ${RESET_DEBOUNCER_PID} || { EXIT_VALUE=1; echo "ERROR:RESET_DEBOUNCER";}
 wait ${RESET_EVENT_COUNTER_PID} || { EXIT_VALUE=1; echo "ERROR:RESET_EVENT_COUNTER";}
 wait ${RESET_UNTIL_ACK_PID} || { EXIT_VALUE=1; echo "ERROR:RESET_UNTIL_ACK_PID";}
 wait ${TRIVIAL_DEFAULT_AVALON_SLAVE_PID} || { EXIT_VALUE=1; echo "ERROR:TRIVIAL_DEFAULT_AVALON_SLAVE";}
+wait ${NIOSV_RESET_LOOPER_PID} || { EXIT_VALUE=1; echo "ERROR:NIOSV_RESET_LOOPER";}
+wait ${DEFAULT_SUBORDINATE_PID} || { EXIT_VALUE=1; echo "ERROR:DEFAULT_SUBORDINATE";}
 
 [ "${EXIT_VALUE}" -ne "0" ] && { echo "Test Failure"; exit ${EXIT_VALUE}; }
 
@@ -128,6 +138,14 @@ wait ${TRIVIAL_DEFAULT_AVALON_SLAVE_PID} || { EXIT_VALUE=1; echo "ERROR:TRIVIAL_
 ../trivial_default_avalon_slave/development/build_and_run_testbench.sh 04 \
 	>> "${BUILD_LOGS:?}"/trivial_default_avalon_slave_log.txt 2>&1 \
 	|| { EXIT_VALUE=1; echo "ERROR:TRIVIAL_DEFAULT_AVALON_SLAVE";}
+
+../niosv_reset_looper/development/build_and_run_testbench.sh 04 \
+	>> "${BUILD_LOGS:?}"/niosv_reset_looper_log.txt 2>&1 \
+	|| { EXIT_VALUE=1; echo "ERROR:NIOSV_RESET_LOOPER";}
+
+../default_subordinate/development/build_and_run_testbench.sh 05 \
+	>> "${BUILD_LOGS:?}"/default_subordinate_log.txt 2>&1 \
+	|| { EXIT_VALUE=1; echo "ERROR:DEFAULT_SUBORDINATE";}
 
 [ "${EXIT_VALUE}" -ne "0" ] && { echo "Test Failure"; }
 [ "${EXIT_VALUE}" -eq "0" ] && { echo "Test Success"; }
